@@ -71,7 +71,7 @@ void MainWindow::causeUpdate() {
 
 }
 
-void MainWindow::on_pushButton_clicked() {
+void MainWindow::on_ngButton_clicked() {
     if (!this->boardScene.hasActiveGame()) {
         GameParameters parameters = this->dialog.makeANewGame();
         qDebug() << "DIFF: " << (int) parameters.difficulty;

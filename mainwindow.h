@@ -33,7 +33,7 @@ class MainWindow : public QMainWindow {
 
     private slots:
 
-        void on_pushButton_clicked();
+        void on_ngButton_clicked();
         void test(CLCEngine::Coordinates what);
         void on_ruleButton_clicked();
         void on_controlsButton_clicked();
