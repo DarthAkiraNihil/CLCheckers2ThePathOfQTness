@@ -6,7 +6,7 @@
 #ifndef AUXULIARY_H
 #define AUXULIARY_H
 
-const CLCEngine::Coordinates INVALID_PLACE = {-1, -1};
+//const CLCEngine::Coordinates INVALID_PLACE = {-1, -1};
 
 class Auxiliary
 {

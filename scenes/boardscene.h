@@ -78,11 +78,7 @@ class BoardScene : public QGraphicsScene {
         //auxilliary
         void auxLoadAssets(QString assetsPath);
         int auxGetAssetIndex(CLCEngine::CheckerMetaInfo metaInfo);
-        CLCEngine::Coordinates auxConvertSceneToBoard(QPointF clickedPlace);
-        CLCEngine::CheckerColor auxInvertColor(CLCEngine::CheckerColor color);
-        CLCEngine::Coordinates auxConvertBoardToCursor(CLCEngine::Coordinates place);
-        CLCEngine::Coordinates auxConvertCursorToBoard();
-        int auxConvertDifficultyToIndex(CLCEngine::Difficulty difficulty);
+
 
         //freakin' assets
         QPixmap assets[9];

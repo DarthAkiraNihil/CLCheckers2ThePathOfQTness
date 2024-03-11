@@ -12,7 +12,7 @@ CLCEngine::Coordinates Auxiliary::convertSceneToBoard(
         (clickedPlace.y() < borderConstraintBottom.y)   ||
         (clickedPlace.y() > borderConstraintTop.y)
     ) {
-        return INVALID_PLACE; //INVALID
+        return {-1, -1}; //INVALID
     } else {
         if (
             playerSide == CLCEngine::CheckerColor::White

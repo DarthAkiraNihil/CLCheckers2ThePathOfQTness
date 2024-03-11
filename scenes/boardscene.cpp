@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <QPainter>
 #include <QGraphicsPixmapItem>
+#include <additional/Auxiliary.h>
 #include "constants.h"
 #include <fstream>
 
@@ -64,48 +65,9 @@ int BoardScene::auxGetAssetIndex(CLCEngine::CheckerMetaInfo metaInfo) {
     return 1 + colorDefiner + typeDefiner;
 }
 
-CLCEngine::Coordinates BoardScene::auxConvertSceneToBoard(QPointF clickedPlace) {
-    if ((clickedPlace.x() < 4) ||
-        (clickedPlace.x() > 484) ||
-        (clickedPlace.y() < 4) ||
-        (clickedPlace.y() > 484)) {
-        return INVALID_PLACE; //INVALID
-    } else {
-        if (this->playerSide == CLCEngine::CheckerColor::White) {
-            return {(int) clickedPlace.x() / 60, 7 - (int) clickedPlace.y() / 60};
-        } else {
-            return {7 -(int) clickedPlace.x() / 60, (int) clickedPlace.y() / 60};
-        }
-        //return {0, 0};
-    }
 
-}
 
-CLCEngine::CheckerColor BoardScene::auxInvertColor(CLCEngine::CheckerColor color) {
-    if (color == CLCEngine::CheckerColor::Black) {
-        return CLCEngine::CheckerColor::White;
-    } else if (color == CLCEngine::CheckerColor::White) {
-        return CLCEngine::CheckerColor::Black;
-    } else {
-        return CLCEngine::CheckerColor::NoColor;
-    }
-}
 
-CLCEngine::Coordinates BoardScene::auxConvertBoardToCursor(CLCEngine::Coordinates place) {
-    if (this->playerSide == CLCEngine::CheckerColor::White) {
-        return {place.x, 7 - place.y};
-    } else {
-        return {7 - place.x, place.y};
-    }
-}
-
-CLCEngine::Coordinates BoardScene::auxConvertCursorToBoard() {
-    if (this->playerSide == CLCEngine::CheckerColor::White) {
-        return {this->cursor.x, 7 - this->cursor.y};
-    } else {
-        return {7 - this->cursor.x, this->cursor.y};
-    }
-}
 
 void BoardScene::constructAGame(GameParameters gameParameters) {
     if (this->isGameBegun) this->endGame();
@@ -115,10 +77,10 @@ void BoardScene::constructAGame(GameParameters gameParameters) {
     this->rival = (gameParameters.gameType == GameType::RivalIsACPU) ?
                    this->constructRival(
                        gameParameters.difficulty,
-                       this->auxInvertColor(gameParameters.playerSide)
+                       Auxiliary::invertColor(gameParameters.playerSide)
                    ) :
                    nullptr;
-    this->rivalIndex = this->auxConvertDifficultyToIndex(gameParameters.difficulty);
+    this->rivalIndex = Auxiliary::convertDifficultyToIndex(gameParameters.difficulty);
     this->playerSide = gameParameters.playerSide;
     this->activeMetaArray = this->gameBoard->makeMetaArray();
     this->isGameBegun = true;
@@ -138,39 +100,22 @@ CLCEngine::AbstractComputerRival* BoardScene::constructRival(CLCEngine::Difficul
 
 }
 
-int BoardScene::auxConvertDifficultyToIndex(CLCEngine::Difficulty difficulty) {
-    switch (difficulty) {
-        case CLCEngine::Difficulty::Dumbass: {
-            return 0;
-        }
-        case CLCEngine::Difficulty::Easy: {
-            return 1;
 
-        }
-        case CLCEngine::Difficulty::Normal: {
-            return 2;
-        }
-        case CLCEngine::Difficulty::Hard: {
-            return 3;
-        }
-        case CLCEngine::Difficulty::Insane: {
-            return 4;
-        }
-        case CLCEngine::Difficulty::Extreme: {
-            return 5;
-        }
-        default: {
-            return 0;
-        }
-    }
-}
 
 void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
         //QPointF clicked = event->scenePos();
     if (this->isGameBegun) {
-        CLCEngine::Coordinates clicked = this->auxConvertSceneToBoard(event->scenePos());
+        CLCEngine::Coordinates clicked = Auxiliary::convertSceneToBoard(
+            event->scenePos(),
+            {4, 4},
+            {484, 484},
+            this->playerSide
+        );
         if (!(clicked == INVALID_PLACE)) {
-            this->cursor = this->auxConvertBoardToCursor(clicked);
+            this->cursor = Auxiliary::convertBoardToCursor(
+                clicked,
+                this->playerSide
+            );
             this->renderContent();
         }
 
@@ -292,7 +237,7 @@ void BoardScene::renderCursor() {
 
 void BoardScene::handleClick() {
     this->findMovesIfRequired();
-    CLCEngine::Coordinates on = this->auxConvertCursorToBoard();
+    CLCEngine::Coordinates on = Auxiliary::convertCursorToBoard(this->cursor, this->playerSide);
     PathMapMarker marker = this->pathMap[on.y][on.x];
     if (marker == PathMapMarker::Destination) {
         this->handleClickDestinationSelected();
@@ -324,7 +269,7 @@ void BoardScene::findMovesIfRequired() {
 
 void BoardScene::handleClickNotDestinationSelected() {
     qDebug() << "JEB: Source choosing";
-    this->source = this->auxConvertCursorToBoard();
+    this->source = Auxiliary::convertCursorToBoard(this->cursor, this->playerSide);
     this->fillPathMap(this->source);
     this->renderContent();
 }
@@ -332,7 +277,7 @@ void BoardScene::handleClickNotDestinationSelected() {
 
 void BoardScene::handleClickDestinationSelected() {
     qDebug() << "JEB: Move";
-    this->destination = this->auxConvertCursorToBoard();
+    this->destination = Auxiliary::convertCursorToBoard(this->cursor, this->playerSide);
     CLCEngine::Move moveToMake = this->getMove(
         this->source,
         this->destination
@@ -587,7 +532,7 @@ GameSaveData BoardScene::exportGameData() {
 
     if (!this->rival) {
         saved.maxDepth = CLCEngine::Difficulty::Human;
-        saved.side = this->auxInvertColor(this->playerSide);
+        saved.side = Auxiliary::invertColor(this->playerSide);
         saved.gameType = GameType::RivalIsAHuman;
     } else {
         saved.maxDepth = this->rival->getMaxDepth();
@@ -623,7 +568,7 @@ void BoardScene::importGameData(GameSaveData save) {
         this->rival = (save.gameType == GameType::RivalIsACPU) ?
                        this->constructRival(
                            save.maxDepth,
-                           this->auxInvertColor(save.playerSide)
+                           Auxiliary::invertColor(save.playerSide)
                        ) :
                        nullptr;
         this->playerSide = save.playerSide;
