@@ -70,6 +70,7 @@ else()
             clcengine2/analyzer/EvalTable.h clcengine2/analyzer/EvalTable.cpp
             constants.h
             mainwindow_cv.ui
+            additional/Auxiliary.h additional/Auxiliary.cpp
 
 
         )

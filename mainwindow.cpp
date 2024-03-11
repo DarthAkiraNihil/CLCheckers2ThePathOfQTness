@@ -7,42 +7,77 @@
 #include "constants.h"
 #include "./ui_mainwindow.h"
 
-MainWindow::MainWindow(QString assetsPath, QWidget *parent)
-	: QMainWindow(parent)
-        , ui(new Ui::MainWindow), boardScene(assetsPath), dialog(assetsPath) {
+MainWindow::MainWindow(QString assetsPath, QWidget *parent):
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    boardScene(assetsPath),
+    dialog(assetsPath) {
+
     ui->setupUi(this);
 
     this->ui->boardView->setScene(&this->boardScene);
     this->ui->boardView->setSceneRect(0, 0, 488, 488);
+    /*
     QObject::connect(
         &this->boardScene,
         &BoardScene::clickHasBeenSomewhere,
         this,
         &MainWindow::test
-    );
-
-    //this->setWindowIcon(QIcon(":/appIconBog.ico"));
-
-    //this->boardScene.startTimer(50);
+    );*/
 
     //signal connection
-    QObject::connect(&this->dialog, &MakeNewGameDialog::transferAvatarIndex, this, &MainWindow::setRivalAvatar);
-    QObject::connect(&this->dialog, &MakeNewGameDialog::transferPlayerName, this, &MainWindow::setPlayerName);
-    QObject::connect(&this->dialog, &MakeNewGameDialog::transferRivalName, this, &MainWindow::setRivalName);
-    QObject::connect(&this->boardScene, &BoardScene::playerWon, this, &MainWindow::showEndgamePlayerWon);
-    QObject::connect(&this->boardScene, &BoardScene::cpuRivalWon, this, &MainWindow::showEndgameCPURivalWon);
-    QObject::connect(&this->boardScene, &BoardScene::humanRivalWon, this, &MainWindow::showEndgameHumanRivalWon);
-    QObject::connect(&this->boardScene, &BoardScene::transferStatusBarText, this, &MainWindow::changeStatusBarText);
-    QObject::connect(&this->boardScene, &BoardScene::transferMoveLogLine, this, &MainWindow::logMove);
-    //this->ui->boardView->u
-    //this->testt = new QTimer;
+    {
+        QObject::connect(
+            &this->dialog,
+            &MakeNewGameDialog::transferAvatarIndex,
+            this, &MainWindow::setRivalAvatar
+        );
+        QObject::connect(
+            &this->dialog,
+            &MakeNewGameDialog::transferPlayerName,
+            this,
+            &MainWindow::setPlayerName
+        );
+        QObject::connect(
+            &this->dialog,
+            &MakeNewGameDialog::transferRivalName,
+            this, &MainWindow::setRivalName
+        );
+        QObject::connect(
+            &this->boardScene,
+            &BoardScene::playerWon,
+            this,
+            &MainWindow::showEndgamePlayerWon
+        );
+        QObject::connect(
+            &this->boardScene,
+            &BoardScene::cpuRivalWon,
+            this,
+            &MainWindow::showEndgameCPURivalWon
+        );
+        QObject::connect(
+            &this->boardScene,
+            &BoardScene::humanRivalWon,
+            this,
+            &MainWindow::showEndgameHumanRivalWon
+        );
+        QObject::connect(
+            &this->boardScene,
+            &BoardScene::transferStatusBarText,
+            this,
+            &MainWindow::changeStatusBarText
+        );
+        QObject::connect(
+            &this->boardScene,
+            &BoardScene::transferMoveLogLine,
+            this,
+            &MainWindow::logMove
+        );
+    }
 
-    //QObject::connect(this->testt, &QTimer::timeout, this, &MainWindow::causeUpdate);
+    //end signal connection
 
-    //this->testt->start(100);
-
-    this->ui->boardView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate) ;
-    //this->ui->boardView->startTimer()
+    //avatars setup
 
     this->avatar1 = new AvatarScene("assets");
     this->avatar2 = new AvatarScene("assets");
@@ -50,25 +85,20 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent)
     this->avatar2->setScaling({101, 101});
     this->avatar1->setScaling({101, 101});
 
-    this->ui->playerOneView->setScene(this->avatar1);
+    this->ui->playerView->setScene(this->avatar1);
     this->ui->rivalView->setScene(this->avatar2);
 
-    this->ui->playerOneView->setSceneRect(0, 0, 101, 101);
+    this->ui->playerView->setSceneRect(0, 0, 101, 101);
     this->ui->rivalView->setSceneRect(0, 0, 101, 101);
+
+    // end avatars setup
+
     this->ui->statusbar->showMessage("Welcome to the club!");
-    //this->ui->statusbar->
 
 }
 
 MainWindow::~MainWindow() {
     delete ui;
-    delete testt;
-}
-
-void MainWindow::causeUpdate() {
-
-    this->ui->boardView->update();
-
 }
 
 void MainWindow::on_ngButton_clicked() {
@@ -92,10 +122,6 @@ void MainWindow::on_ngButton_clicked() {
         QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете начать новую игру, пока не закончите текущую!");
     }
 
-}
-
-void MainWindow::test(CLCEngine::Coordinates what) {
-    qDebug() << "JEB: Click on the board: x:" << what.x << ", y:" << what.y;
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {

@@ -4,6 +4,8 @@
 #define CONSTANTS_H
 
 namespace AppConst {
+
+
     const int cpuDrawChances[6] = {
         999,
         800,

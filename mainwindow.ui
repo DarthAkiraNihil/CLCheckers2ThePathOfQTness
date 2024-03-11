@@ -22,12 +22,12 @@
   <widget class="QWidget" name="central">
    <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
-     <layout class="QHBoxLayout" name="mainLayout" stretch="1,0,1,1">
+     <layout class="QHBoxLayout" name="mainLayout" stretch="1,8,1,2">
       <property name="spacing">
        <number>5</number>
       </property>
       <property name="sizeConstraint">
-       <enum>QLayout::SetFixedSize</enum>
+       <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="leftMargin">
        <number>2</number>
@@ -76,7 +76,7 @@ text-decoration: underline;</string>
          </widget>
         </item>
         <item alignment="Qt::AlignHCenter">
-         <widget class="QGraphicsView" name="playerOneView">
+         <widget class="QGraphicsView" name="playerView">
           <property name="minimumSize">
            <size>
             <width>101</width>
@@ -145,6 +145,12 @@ text-decoration: underline;</string>
          <size>
           <width>1</width>
           <height>1</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>490</width>
+          <height>490</height>
          </size>
         </property>
         <property name="verticalScrollBarPolicy">

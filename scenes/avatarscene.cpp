@@ -8,13 +8,20 @@ AvatarScene::AvatarScene(QString assetsPath, QObject *parent) : QGraphicsScene{p
 
 void AvatarScene::loadAvatars(QString assetsPath) {
     for (int i = 0; i < 9; i++) {
-        this->avatars[i] = QPixmap(assetsPath + "\\cpu\\" + this->avatarsNames[i]);
+        this->avatars[i] = QPixmap(
+            assetsPath + "\\cpu\\" + this->avatarsNames[i]
+        );
     }
 }
 
 void AvatarScene::drawAvatar(int index) {
     if (!(this->scaling == INVALID_PLACE)) {
-        this->addPixmap(this->avatars[index].scaled(this->scaling.x, this->scaling.y));
+        this->addPixmap(
+            this->avatars[index].scaled(
+                this->scaling.x,
+                this->scaling.y
+            )
+        );
     }
 }
 

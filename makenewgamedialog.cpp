@@ -14,7 +14,9 @@ MakeNewGameDialog::MakeNewGameDialog(QString avatarAssetsPath, QWidget *parent):
     avatarScene(avatarAssetsPath) {
 
     ui->setupUi(this);
+
     this->currentParams = DEFAULT_PARAMS;
+
     this->currentParams.playerSide = this->auxGeneratePlayerSide();
     this->status = QDialog::Rejected;
     this->avatarScene.setScaling({128, 128});

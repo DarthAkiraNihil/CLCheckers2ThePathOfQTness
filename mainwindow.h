@@ -25,7 +25,7 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
         MakeNewGameDialog dialog;
         BoardScene boardScene;
-        QTimer* testt;
+
         void keyPressEvent(QKeyEvent *event);
         void beginGame();
         AvatarScene *avatar1, *avatar2;
@@ -34,20 +34,23 @@ class MainWindow : public QMainWindow {
     private slots:
 
         void on_ngButton_clicked();
-        void test(CLCEngine::Coordinates what);
         void on_ruleButton_clicked();
         void on_controlsButton_clicked();
         void on_loadButton_clicked();
         void on_saveButton_clicked();
         void on_offerDrawButton_clicked();
         void on_surrenderButton_clicked();
-        void causeUpdate();
+
+        //void causeUpdate();
+
         void setRivalAvatar(int index);
         void setPlayerName(QString name);
         void setRivalName(QString name);
+
         void showEndgamePlayerWon();
         void showEndgameCPURivalWon(QString message);
         void showEndgameHumanRivalWon();
+
         void changeStatusBarText(QString text);
         void logMove(QString moveLine);
 };
