@@ -17,8 +17,9 @@ std::default_random_engine eng {rd()};
 //std::mt19937 chancer(rd());
 std::uniform_int_distribution<> glist(0, 1000);
 
-BoardScene::BoardScene(QString assetsPath, QObject *parent): QGraphicsScene{parent} {
-    this->auxLoadAssets(assetsPath);
+BoardScene::BoardScene(AssetLoader* assetLoader, QObject *parent): QGraphicsScene{parent} {
+    this->assetLoader = assetLoader;
+
     this->playerSide = CLCEngine::CheckerColor::NoColor;
     this->activeMetaArray = nullptr;
     this->gameBoard = nullptr;
@@ -33,15 +34,13 @@ BoardScene::BoardScene(QString assetsPath, QObject *parent): QGraphicsScene{pare
     this->drawHasBeenOffered = false;
     this->step = 0;
     this->rivalIndex = -1;
-    QGraphicsPixmapItem *logo = this->addPixmap(assets[8]);
+    QGraphicsPixmapItem *logo = this->addPixmap(this->assetLoader->getLogo());
     logo->setPos(117, 117);
-    this->testt = new QTimer;
-    QObject::connect(this->testt, &QTimer::timeout, this, &BoardScene::forceRendering);
-    this->testt->start(100);
-    //this->activePixmaps = new CLCEngine::DynamicSequence<QGraphicsPixmapItem*>;
-    //delete logo;
 
-    //setViewportUpdateMode(QGraphicsView::FullViewportUpdate)
+
+    this->forcedRenderTimeout = new QTimer;
+    QObject::connect(this->forcedRenderTimeout, &QTimer::timeout, this, &BoardScene::forceRendering);
+    this->forcedRenderTimeout->start(100);
 }
 
 BoardScene::~BoardScene() {
@@ -52,21 +51,6 @@ BoardScene::~BoardScene() {
 void BoardScene::forceRendering() {
     QApplication::processEvents();
 }
-
-void BoardScene::auxLoadAssets(QString assetsPath) {
-    for (int i = 0; i < 9; i++) {
-        this->assets[i] = QPixmap(assetsPath + "\\" + AppConst::standardAssetsNames[i]);
-    }
-}
-
-int BoardScene::auxGetAssetIndex(CLCEngine::CheckerMetaInfo metaInfo) {
-    int colorDefiner = (metaInfo.color == CLCEngine::CheckerColor::Black) ? 0 : 2,
-        typeDefiner = (metaInfo.type == CLCEngine::CheckerType::Common) ? 0: 1;
-    return 1 + colorDefiner + typeDefiner;
-}
-
-
-
 
 
 void BoardScene::constructAGame(GameParameters gameParameters) {
@@ -125,7 +109,6 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
         emit this->clickHasBeenSomewhere(clicked);
     }
-    //QGraphicsScene::mousePressEvent(event);
 }
 
 void BoardScene::doTheFirstCPUMoveIfRequired() {
@@ -181,15 +164,14 @@ void BoardScene::renderBoard() {
     //asset.setOffset({20, 20})
     qDebug() << "JEB: Drawin' the board";
     this->update(0, 0, 488, 488); // todo make it painter
-    this->addPixmap(this->assets[0]);
+    this->addPixmap(this->assetLoader->getBoard());
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (this->activeMetaArray[i][j].color != CLCEngine::CheckerColor::NoColor &&
                 this->activeMetaArray[i][j].type != CLCEngine::CheckerType::NoType) {
-                QGraphicsPixmapItem *beingDrawn = this->addPixmap(this->assets[this->auxGetAssetIndex(this->activeMetaArray[i][j])]);
+                QGraphicsPixmapItem *beingDrawn = this->addPixmap(this->assetLoader->getChecker(this->activeMetaArray[i][j]));
                 this->activePixmaps.push_back(beingDrawn);
-                //sf::Sprite beingDrawn(this->assets[this->getAssetIndex(metaArray[i][j])]);
                 if (this->playerSide == CLCEngine::CheckerColor::Black) {
                     beingDrawn->setPos((float) (9 + (7 - j) * 60), (float) (9 + i * 60));
                 } else {
@@ -209,14 +191,8 @@ void BoardScene::renderPathmap() {
         for (int j = 0; j < 8; j++) {
             if (this->pathMap[i][j] != PathMapMarker::Nothing) {
 
-                QGraphicsPixmapItem *beingDrawn = this->addPixmap(
-                    this->assets[
-                        (this->pathMap[i][j] == PathMapMarker::Destination) ? 6 : 7
-                    ]
-                );
+                QGraphicsPixmapItem *beingDrawn = this->addPixmap(this->assetLoader->getPathmapMarker(this->pathMap[i][j]));
                 this->activePixmaps.push_back(beingDrawn);
-                //sf::Sprite beingDrawn(this->assets[this->getAssetIndex(metaArray[i][j])]);
-                // TODO
                 if (this->playerSide == CLCEngine::CheckerColor::Black) {
                     beingDrawn->setPos((float) (4 + (7 - j) * 60), (float) (4 + i * 60));
                 } else {
@@ -229,7 +205,7 @@ void BoardScene::renderPathmap() {
 }
 
 void BoardScene::renderCursor() {
-    QGraphicsPixmapItem *beingDrawn = this->addPixmap(this->assets[5]);
+    QGraphicsPixmapItem *beingDrawn = this->addPixmap(this->assetLoader->getCursor());
     this->activePixmaps.push_back(beingDrawn);
     beingDrawn->setPos((float) (4 + this->cursor.x * 60), (float) (4 + this->cursor.y * 60));
 }

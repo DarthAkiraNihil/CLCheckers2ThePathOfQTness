@@ -43,6 +43,15 @@ set(PROJECT_SOURCES
         auxTypes/cursormovedirections.h
         scenes/avatarscene.h scenes/avatarscene.cpp
         auxTypes/gamesavedata.h
+        clcengine2/analyzer/RivalType.h
+
+        clcengine2/analyzer/EvalTables.h
+        clcengine2/analyzer/EvalTable.h clcengine2/analyzer/EvalTable.cpp
+        constants.h
+        mainwindow_cv.ui
+        additional/Auxiliary.h additional/Auxiliary.cpp
+        additional/GameState.h additional/GameState.cpp
+        additional/BoardRenderer.h additional/BoardRenderer.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -64,16 +73,12 @@ else()
     else()
         add_executable(CLCheckers2OfSoQTness
             ${PROJECT_SOURCES}
-            clcengine2/analyzer/RivalType.h
+            additional/AssetLoader.h additional/AssetLoader.cpp
 
-            clcengine2/analyzer/EvalTables.h
-            clcengine2/analyzer/EvalTable.h clcengine2/analyzer/EvalTable.cpp
-            constants.h
-            mainwindow_cv.ui
-            additional/Auxiliary.h additional/Auxiliary.cpp
 
 
         )
+
     endif()
 endif()
 

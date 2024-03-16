@@ -31,6 +31,8 @@ class Auxiliary
             CLCEngine::CheckerColor playerSide
         );
         static int convertDifficultyToIndex(CLCEngine::Difficulty difficulty);
+        static CLCEngine::Difficulty getDifficultyByIndex(int index);
+        static CLCEngine::CheckerColor generatePlayerSide();
 
     //private:
 

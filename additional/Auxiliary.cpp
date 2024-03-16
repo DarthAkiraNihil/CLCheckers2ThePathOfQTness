@@ -1,4 +1,10 @@
 #include "Auxiliary.h"
+#include <random>
+
+std::random_device sideDecider;
+std::mt19937 sideGenerator(sideDecider());
+std::uniform_int_distribution<> sideDist(0, 1000);
+
 
 CLCEngine::Coordinates Auxiliary::convertSceneToBoard(
         QPointF clickedPlace,
@@ -80,5 +86,41 @@ int Auxiliary::convertDifficultyToIndex(CLCEngine::Difficulty difficulty) {
         default: {
             return 0;
         }
+    }
+}
+
+CLCEngine::Difficulty Auxiliary::getDifficultyByIndex(int index) {
+    switch (index) {
+        case 0: {
+            return CLCEngine::Difficulty::Dumbass;
+        }
+        case 1: {
+            return CLCEngine::Difficulty::Easy;
+        }
+        case 2: {
+            return CLCEngine::Difficulty::Normal;
+        }
+        case 3: {
+            return CLCEngine::Difficulty::Hard;
+            }
+        case 4: {
+            return CLCEngine::Difficulty::Insane;
+        }
+        case 5: {
+            return CLCEngine::Difficulty::Extreme;
+        }
+        default: {
+            return CLCEngine::Difficulty::Dumbass;
+        }
+    }
+}
+
+CLCEngine::CheckerColor Auxiliary::generatePlayerSide() {
+    int generated = sideDist(sideGenerator);
+    if (generated < 500) {
+        return CLCEngine::CheckerColor::White;
+    }
+    else {
+        return CLCEngine::CheckerColor::Black;
     }
 }

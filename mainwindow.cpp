@@ -10,12 +10,15 @@
 MainWindow::MainWindow(QString assetsPath, QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    boardScene(assetsPath),
-    dialog(assetsPath) {
+    loader(assetsPath) {
 
     ui->setupUi(this);
 
-    this->ui->boardView->setScene(&this->boardScene);
+    this->boardScene = new BoardScene(&loader);
+    this->dialog = new MakeNewGameDialog(&loader);
+
+    this->ui->boardView->setScene(this->boardScene);
+
     this->ui->boardView->setSceneRect(0, 0, 488, 488);
     /*
     QObject::connect(
@@ -28,47 +31,47 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
     //signal connection
     {
         QObject::connect(
-            &this->dialog,
+            this->dialog,
             &MakeNewGameDialog::transferAvatarIndex,
             this, &MainWindow::setRivalAvatar
         );
         QObject::connect(
-            &this->dialog,
+            this->dialog,
             &MakeNewGameDialog::transferPlayerName,
             this,
             &MainWindow::setPlayerName
         );
         QObject::connect(
-            &this->dialog,
+            this->dialog,
             &MakeNewGameDialog::transferRivalName,
             this, &MainWindow::setRivalName
         );
         QObject::connect(
-            &this->boardScene,
+            this->boardScene,
             &BoardScene::playerWon,
             this,
             &MainWindow::showEndgamePlayerWon
         );
         QObject::connect(
-            &this->boardScene,
+            this->boardScene,
             &BoardScene::cpuRivalWon,
             this,
             &MainWindow::showEndgameCPURivalWon
         );
         QObject::connect(
-            &this->boardScene,
+            this->boardScene,
             &BoardScene::humanRivalWon,
             this,
             &MainWindow::showEndgameHumanRivalWon
         );
         QObject::connect(
-            &this->boardScene,
+            this->boardScene,
             &BoardScene::transferStatusBarText,
             this,
             &MainWindow::changeStatusBarText
         );
         QObject::connect(
-            &this->boardScene,
+            this->boardScene,
             &BoardScene::transferMoveLogLine,
             this,
             &MainWindow::logMove
@@ -79,8 +82,8 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
 
     //avatars setup
 
-    this->avatar1 = new AvatarScene("assets");
-    this->avatar2 = new AvatarScene("assets");
+    this->avatar1 = new AvatarScene(&this->loader);
+    this->avatar2 = new AvatarScene(&this->loader);
 
     this->avatar2->setScaling({101, 101});
     this->avatar1->setScaling({101, 101});
@@ -102,19 +105,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_ngButton_clicked() {
-    if (!this->boardScene.hasActiveGame()) {
-        GameParameters parameters = this->dialog.makeANewGame();
+    if (!this->boardScene->hasActiveGame()) {
+        GameParameters parameters = this->dialog->makeANewGame();
         qDebug() << "DIFF: " << (int) parameters.difficulty;
-        if (this->dialog.getStatus() == QDialog::Accepted) {
+        if (this->dialog->getStatus() == QDialog::Accepted) {
             qDebug() << "JEB: Constructing a game";
-            this->boardScene.constructAGame(parameters);
+            this->boardScene->constructAGame(parameters);
             //this->boardScene.setPlayerColor(this->gameBoard->whoIsPlayer());
             this->avatar1->drawAvatar(7);
             if (parameters.gameType == GameType::RivalIsAHuman) {
                 this->avatar2->drawAvatar(7);
             }
-            this->boardScene.renderContent();
-            this->boardScene.doTheFirstCPUMoveIfRequired();
+            this->boardScene->renderContent();
+            this->boardScene->doTheFirstCPUMoveIfRequired();
         } else {
             qDebug() << "JEB: Canceled construction";
         }
@@ -128,23 +131,23 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
     switch(event->key()) {
         case Qt::Key_W: {
-            this->boardScene.moveCursor(CursorMoveDirections::DIRECTION_UP);
+            this->boardScene->moveCursor(CursorMoveDirections::DIRECTION_UP);
             break;
         }
         case Qt::Key_A: {
-            this->boardScene.moveCursor(CursorMoveDirections::DIRECTION_LEFT);
+            this->boardScene->moveCursor(CursorMoveDirections::DIRECTION_LEFT);
             break;
         }
         case Qt::Key_S: {
-            this->boardScene.moveCursor(CursorMoveDirections::DIRECTION_DOWN);
+            this->boardScene->moveCursor(CursorMoveDirections::DIRECTION_DOWN);
             break;
         }
         case Qt::Key_D: {
-            this->boardScene.moveCursor(CursorMoveDirections::DIRECTION_RIGHT);
+            this->boardScene->moveCursor(CursorMoveDirections::DIRECTION_RIGHT);
             break;
         }
         case Qt::Key_Return: {
-            this->boardScene.handleClick();
+            this->boardScene->handleClick();
             break;
         }
     }
@@ -171,7 +174,7 @@ void MainWindow::showEndgamePlayerWon() {
         "Flawless victory!",
         "Вы победили!"
     ).exec();
-    this->boardScene.endGame();
+    this->boardScene->endGame();
 }
 
 void MainWindow::showEndgameCPURivalWon(QString message) {
@@ -180,7 +183,7 @@ void MainWindow::showEndgameCPURivalWon(QString message) {
         "Flawless victory!",
         message
     ).exec();
-    this->boardScene.endGame();
+    this->boardScene->endGame();
 }
 
 void MainWindow::showEndgameHumanRivalWon() {
@@ -189,7 +192,7 @@ void MainWindow::showEndgameHumanRivalWon() {
         "Flawless victory!",
         "Oh no"
     ).exec();
-    this->boardScene.endGame();
+    this->boardScene->endGame();
 }
 
 void MainWindow::on_ruleButton_clicked()
@@ -241,7 +244,7 @@ void MainWindow::logMove(QString moveLine) {
 
 void MainWindow::on_loadButton_clicked()
 {
-    if (this->boardScene.hasActiveGame()) {
+    if (this->boardScene->hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете загрузить игру, ведь в данный момент вы уже играете. Закончите сперва текущую игру!");
     } else {
         QString fname = QFileDialog::getOpenFileName(this, tr("Load Game"),
@@ -254,7 +257,7 @@ void MainWindow::on_loadButton_clicked()
             else {
                 fread(&save, sizeof(GameSaveData), 1, inputDataStream);
                 fclose(inputDataStream);
-                this->boardScene.importGameData(save);
+                this->boardScene->importGameData(save);
             }
         }
     }
@@ -263,7 +266,7 @@ void MainWindow::on_loadButton_clicked()
 
 void MainWindow::on_saveButton_clicked()
 {
-    if (!this->boardScene.hasActiveGame()) {
+    if (!this->boardScene->hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете сохранить игру, ведь у вас нет игры. Начните сперва новую игру!");
     } else {
         QString fname = QFileDialog::getSaveFileName(
@@ -273,7 +276,7 @@ void MainWindow::on_saveButton_clicked()
             tr("Savefiles (*.sav)")
         );
         if (fname != "") {
-            GameSaveData save = this->boardScene.exportGameData();
+            GameSaveData save = this->boardScene->exportGameData();
             FILE* saveStream = fopen(fname.toLocal8Bit().data(), "w+b");
             fwrite(&save, sizeof(GameSaveData), 1, saveStream);
             fclose(saveStream);
@@ -284,14 +287,14 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_offerDrawButton_clicked()
 {
-    if (this->boardScene.hasActiveGame()) {
-        if (this->boardScene.isDrawAvailable()) {
-            if (this->boardScene.isThereACPURival()) {
-                if (this->boardScene.requestCPURivalDrawAgreement()) {
-                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->boardScene.getRivalIndex()]);
-                    this->boardScene.endGame();
+    if (this->boardScene->hasActiveGame()) {
+        if (this->boardScene->isDrawAvailable()) {
+            if (this->boardScene->isThereACPURival()) {
+                if (this->boardScene->requestCPURivalDrawAgreement()) {
+                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->boardScene->getRivalIndex()]);
+                    this->boardScene->endGame();
                 } else {
-                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->boardScene.getRivalIndex()]);
+                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->boardScene->getRivalIndex()]);
                 }
             } else {
                 if (
@@ -303,12 +306,12 @@ void MainWindow::on_offerDrawButton_clicked()
                     ) == QMessageBox::Yes
                 ) {
                     QMessageBox::information(this, "Friendship", "Friendship, friendship, again!");
-                    this->boardScene.endGame();
+                    this->boardScene->endGame();
                 } else {
                     QMessageBox::warning(this, "Concurrency", "Concurrency, concurrency, again!");
                 }
             }
-            this->boardScene.setDrawAsOffered();
+            this->boardScene->setDrawAsOffered();
         } else {
             QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете предложить ничью, ведь вы уже предлагали её на этом ходе! Попробуйте на следующем ходе.");
         }
@@ -321,7 +324,7 @@ void MainWindow::on_offerDrawButton_clicked()
 
 void MainWindow::on_surrenderButton_clicked()
 {
-    if (this->boardScene.hasActiveGame()) {
+    if (this->boardScene->hasActiveGame()) {
         if (
             QMessageBox::question(
                 this,
@@ -331,7 +334,7 @@ void MainWindow::on_surrenderButton_clicked()
             ) == QMessageBox::Yes
         ) {
             QMessageBox::critical(this, "Saatana vittu perkele", "what a dumbass");
-            this->boardScene.endGame();
+            this->boardScene->endGame();
         }
     } else {
         QMessageBox::critical(this, "Saatana vittu perkele", "Ай-яй! Вы не можете сдаться, ведь у вас нет игры!");

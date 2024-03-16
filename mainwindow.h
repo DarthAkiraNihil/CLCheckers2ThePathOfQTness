@@ -23,8 +23,9 @@ class MainWindow : public QMainWindow {
         ~MainWindow();
     private:
         Ui::MainWindow *ui;
-        MakeNewGameDialog dialog;
-        BoardScene boardScene;
+        MakeNewGameDialog* dialog;
+        BoardScene* boardScene;
+        AssetLoader loader;
 
         void keyPressEvent(QKeyEvent *event);
         void beginGame();

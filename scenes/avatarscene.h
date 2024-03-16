@@ -4,28 +4,17 @@
 #include <clcengine2/checker/CheckerMetaInfo.h>
 #include <QGraphicsScene>
 #include <QPixmap>
+#include <additional/AssetLoader.h>
 
 class AvatarScene : public QGraphicsScene {
         Q_OBJECT
     public:
-        explicit AvatarScene(QString assetsPath, QObject *parent = nullptr);
+        explicit AvatarScene(AssetLoader* assetLoader, QObject *parent = nullptr);
         void drawAvatar(int index);
         void setScaling(CLCEngine::Coordinates scaling);
 
     private:
-        QString avatarsNames[9] = {
-            "abugan.jpg",
-            "nerd.jpg",
-            "wojak.jpg",
-            "tai_lung.png",
-            "jotaro.png",
-            "eggman.png",
-            "user.jpg",
-            "chad.jpg",
-            "none.jpg"
-        };
-        QPixmap avatars[9];
-        void loadAvatars(QString assetsPath);
+        AssetLoader* assetLoader;
         CLCEngine::Coordinates scaling;
 };
 #endif // AVATARSCENE_H

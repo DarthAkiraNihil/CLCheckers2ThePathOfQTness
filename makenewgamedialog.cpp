@@ -2,22 +2,20 @@
 #include "./ui_makenewgamedialog.h"
 #include <QDebug>
 #include <QInputDialog>
-#include <random>
+#include <additional/Auxiliary.h>
+#include <constants.h>
 
-std::random_device sideDecider;
-std::mt19937 sideGenerator(sideDecider());
-std::uniform_int_distribution<> sideDist(0, 1000);
-
-MakeNewGameDialog::MakeNewGameDialog(QString avatarAssetsPath, QWidget *parent):
+MakeNewGameDialog::MakeNewGameDialog(AssetLoader* assetLoader, QWidget *parent):
     QDialog(parent),
     ui(new Ui::MakeNewGameDialog),
-    avatarScene(avatarAssetsPath) {
+    avatarScene(assetLoader) {
 
     ui->setupUi(this);
 
     this->currentParams = DEFAULT_PARAMS;
 
-    this->currentParams.playerSide = this->auxGeneratePlayerSide();
+    this->currentParams.playerSide = Auxiliary::generatePlayerSide();
+
     this->status = QDialog::Rejected;
     this->avatarScene.setScaling({128, 128});
     this->ui->rivalPic->setScene(&this->avatarScene);
@@ -39,10 +37,10 @@ void MakeNewGameDialog::on_rbVSHuman_clicked() {
 
 void MakeNewGameDialog::on_rbVSCPU_clicked() {
     this->currentParams.gameType = GameType::RivalIsACPU;
-    this->currentParams.difficulty = this->auxGetDifficultyByIndex(this->ui->comboBox->currentIndex());
+    this->currentParams.difficulty = Auxiliary::getDifficultyByIndex(this->ui->comboBox->currentIndex());
     this->avatarScene.drawAvatar(this->ui->comboBox->currentIndex());
-    this->ui->rivalName->setText(this->cpuNames[this->ui->comboBox->currentIndex()]);
-    this->ui->cpuRivalDesc->setText(this->cpuDescs[this->ui->comboBox->currentIndex()]);
+    this->ui->rivalName->setText(AppConst::cpuNames[this->ui->comboBox->currentIndex()]);
+    this->ui->cpuRivalDesc->setText(AppConst::cpuDescs[this->ui->comboBox->currentIndex()]);
 }
 
 void MakeNewGameDialog::on_buttonBox_accepted() {
@@ -55,17 +53,17 @@ void MakeNewGameDialog::on_buttonBox_rejected() {
 
 void MakeNewGameDialog::on_comboBox_currentIndexChanged(int index) {
     if (this->currentParams.gameType == GameType::RivalIsACPU) {
-        this->currentParams.difficulty = this->auxGetDifficultyByIndex(index);
+        this->currentParams.difficulty = Auxiliary::getDifficultyByIndex(index);
         this->avatarScene.drawAvatar(index);
-        this->ui->rivalName->setText(this->cpuNames[index]);
+        this->ui->rivalName->setText(AppConst::cpuNames[index]);
 
-        this->ui->cpuRivalDesc->setText(this->cpuDescs[index]);
+        this->ui->cpuRivalDesc->setText(AppConst::cpuDescs[index]);
     }
 
 }
 
 void MakeNewGameDialog::on_sideButtonRandom_clicked() {
-    this->currentParams.playerSide = this->auxGeneratePlayerSide();
+    this->currentParams.playerSide = Auxiliary::generatePlayerSide();
 }
 
 
@@ -92,7 +90,7 @@ GameParameters MakeNewGameDialog::makeANewGame() {
     if (this->status == Accepted) {
         if (toReturn.gameType == GameType::RivalIsACPU) {
             emit this->transferAvatarIndex(this->ui->comboBox->currentIndex());
-            emit this->transferRivalName(this->cpuNames[this->ui->comboBox->currentIndex()]);
+            emit this->transferRivalName(AppConst::cpuNames[this->ui->comboBox->currentIndex()]);
         } else {
             bool ok;
             QString secondRival = QInputDialog::getText(
@@ -120,40 +118,4 @@ GameParameters MakeNewGameDialog::makeANewGame() {
     }
     this->ui->comboBox->setCurrentIndex(0);
     return toReturn;
-}
-
-CLCEngine::Difficulty MakeNewGameDialog::auxGetDifficultyByIndex(int index) {
-    switch (index) {
-        case 0: {
-            return CLCEngine::Difficulty::Dumbass;
-        }
-        case 1: {
-            return CLCEngine::Difficulty::Easy;
-        }
-        case 2: {
-            return CLCEngine::Difficulty::Normal;
-        }
-        case 3: {
-            return CLCEngine::Difficulty::Hard;
-            }
-        case 4: {
-            return CLCEngine::Difficulty::Insane;
-        }
-        case 5: {
-            return CLCEngine::Difficulty::Extreme;
-        }
-        default: {
-            return CLCEngine::Difficulty::Dumbass;
-        }
-    }
-}
-
-CLCEngine::CheckerColor MakeNewGameDialog::auxGeneratePlayerSide() {
-    int generated = sideDist(sideGenerator);
-    if (generated < 500) {
-        return CLCEngine::CheckerColor::White;
-    }
-    else {
-        return CLCEngine::CheckerColor::Black;
-    }
 }

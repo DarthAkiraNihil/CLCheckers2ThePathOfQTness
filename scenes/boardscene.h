@@ -12,6 +12,7 @@
 #include <auxTypes/gameparameters.h>
 #include <auxTypes/pathmapmarker.h>
 #include <vector>
+#include <additional/AssetLoader.h>
 
 
 const CLCEngine::Coordinates INVALID_PLACE = {-1, -1};
@@ -20,7 +21,7 @@ class BoardScene : public QGraphicsScene {
     Q_OBJECT
 
     public:
-        explicit BoardScene(QString assetsPath, QObject *parent = nullptr);
+        explicit BoardScene(AssetLoader* assetLoader, QObject *parent = nullptr);
         ~BoardScene();
 
         void renderContent();
@@ -75,13 +76,7 @@ class BoardScene : public QGraphicsScene {
 
         void makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int mSecDelay);
 
-        //auxilliary
-        void auxLoadAssets(QString assetsPath);
-        int auxGetAssetIndex(CLCEngine::CheckerMetaInfo metaInfo);
-
-
-        //freakin' assets
-        QPixmap assets[9];
+        AssetLoader* assetLoader;
 
         //game state fields
         int rivalIndex, step;
@@ -105,7 +100,7 @@ class BoardScene : public QGraphicsScene {
         void registerMove(CLCEngine::Move move);
         void registerSequence(CLCEngine::MoveList& sequence);
 
-        QTimer* testt;
+        QTimer* forcedRenderTimeout;
 
     signals:
         void clickHasBeenSomewhere(CLCEngine::Coordinates where);
