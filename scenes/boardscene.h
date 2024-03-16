@@ -13,6 +13,7 @@
 #include <auxTypes/pathmapmarker.h>
 #include <vector>
 #include <additional/AssetLoader.h>
+#include <additional/GameState.h>
 
 
 const CLCEngine::Coordinates INVALID_PLACE = {-1, -1};
@@ -34,17 +35,18 @@ class BoardScene : public QGraphicsScene {
         GameSaveData exportGameData();
         void importGameData(GameSaveData save);
 
-        void endGame();
+        //void endGame();
 
         bool isDrawAvailable();
         void setDrawAsOffered();
         bool requestCPURivalDrawAgreement();
-        bool isThereACPURival();
+        //bool isThereACPURival();
         int getRivalIndex();
 
 
         QString getSurrenderMessage();
-        bool hasActiveGame();
+        GameState* getStateReference();
+        //bool hasActiveGame();
 
     private:
         void renderBoard();
@@ -55,43 +57,45 @@ class BoardScene : public QGraphicsScene {
         //event
         void mousePressEvent(QGraphicsSceneMouseEvent * event);
 
-        CLCEngine::Board* constructBoard(CLCEngine::CheckerColor playerSide);
-        CLCEngine::AbstractComputerRival* constructRival(
-            CLCEngine::Difficulty difficulty,
-            CLCEngine::CheckerColor side
-        );
+        //CLCEngine::Board* constructBoard(CLCEngine::CheckerColor playerSide);
+        //CLCEngine::AbstractComputerRival* constructRival(
+        //    CLCEngine::Difficulty difficulty,
+        //    CLCEngine::CheckerColor side
+        //);
 
-        void resetPathmap();
-        void fillPathMap(CLCEngine::Coordinates source);
+        //void resetPathmap();
+        //void fillPathMap(CLCEngine::Coordinates source);
 
         //internal click handle
-        void findMovesIfRequired();
+        //void findMovesIfRequired();
         void handleClickNotDestinationSelected();
         void handleClickDestinationSelected();
         void passTurn();
 
-        CLCEngine::Move getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination);
-        void applyMoveOnMetaArray(CLCEngine::Move move);
+        //CLCEngine::Move getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination);
+        //void applyMoveOnMetaArray(CLCEngine::Move move);
         CLCEngine::MoveList filterMovesWith(CLCEngine::Move move);
 
         void makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int mSecDelay);
 
         AssetLoader* assetLoader;
+        GameState state;
 
         //game state fields
-        int rivalIndex, step;
-        CLCEngine::CheckerColor playerSide;
-        CLCEngine::Board* gameBoard;
-        CLCEngine::AbstractComputerRival* rival;
-        CLCEngine::MetaArray activeMetaArray;
-        PathMapMarker pathMap[8][8];
+        //int rivalIndex, step;
+        //CLCEngine::CheckerColor playerSide;
+        //CLCEngine::Board* gameBoard;
+        //CLCEngine::AbstractComputerRival* rival;
+        //CLCEngine::MetaArray activeMetaArray;
+        //PathMapMarker pathMap[8][8];
         CLCEngine::Coordinates cursor, source, destination;
-        bool movesHaveBeenFound, moveHasBeenMade, isGameBegun, drawHasBeenOffered;
-        CLCEngine::MoveList currentSequence{}, nearestMoves{};
-        CLCEngine::MoveSequencesList nearestSequences{};
+        //bool movesHaveBeenFound, moveHasBeenMade, isGameBegun, drawHasBeenOffered;
+        //CLCEngine::MoveList currentSequence{}, nearestMoves{};
+        //CLCEngine::MoveSequencesList nearestSequences{};
 
         //pixmap res
         std::vector<QGraphicsPixmapItem*> activePixmaps{};
+
         CLCEngine::DynamicSequence<std::string> gameLog{};
         std::string currentLogLine{};
 

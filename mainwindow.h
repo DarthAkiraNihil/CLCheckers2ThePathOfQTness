@@ -25,12 +25,16 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
         MakeNewGameDialog* dialog;
         BoardScene* boardScene;
+        GameState* stateRef;
+
         AssetLoader loader;
 
         void keyPressEvent(QKeyEvent *event);
         void beginGame();
         AvatarScene *avatar1, *avatar2;
         QString playerName, rivalName;
+    signals:
+        void invokeEndgame();
 
     private slots:
 

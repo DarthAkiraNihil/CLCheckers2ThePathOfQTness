@@ -74,6 +74,7 @@ else()
         add_executable(CLCheckers2OfSoQTness
             ${PROJECT_SOURCES}
             additional/AssetLoader.h additional/AssetLoader.cpp
+            additional/PartyLogger.h additional/PartyLogger.cpp
 
 
 

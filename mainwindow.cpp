@@ -28,6 +28,8 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
         &MainWindow::test
     );*/
 
+    this->stateRef = this->boardScene->getStateReference();
+
     //signal connection
     {
         QObject::connect(
@@ -76,6 +78,11 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
             this,
             &MainWindow::logMove
         );
+        QObject::connect(
+            this,
+            &MainWindow::invokeEndgame,
+            this->stateRef, &GameState::endGame
+        );
     }
 
     //end signal connection
@@ -105,12 +112,12 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_ngButton_clicked() {
-    if (!this->boardScene->hasActiveGame()) {
+    if (!this->stateRef->hasActiveGame()) {
         GameParameters parameters = this->dialog->makeANewGame();
         qDebug() << "DIFF: " << (int) parameters.difficulty;
         if (this->dialog->getStatus() == QDialog::Accepted) {
             qDebug() << "JEB: Constructing a game";
-            this->boardScene->constructAGame(parameters);
+            this->stateRef->makeGame(parameters);
             //this->boardScene.setPlayerColor(this->gameBoard->whoIsPlayer());
             this->avatar1->drawAvatar(7);
             if (parameters.gameType == GameType::RivalIsAHuman) {
@@ -174,7 +181,7 @@ void MainWindow::showEndgamePlayerWon() {
         "Flawless victory!",
         "Вы победили!"
     ).exec();
-    this->boardScene->endGame();
+    emit this->invokeEndgame();
 }
 
 void MainWindow::showEndgameCPURivalWon(QString message) {
@@ -183,7 +190,7 @@ void MainWindow::showEndgameCPURivalWon(QString message) {
         "Flawless victory!",
         message
     ).exec();
-    this->boardScene->endGame();
+    emit this->invokeEndgame();
 }
 
 void MainWindow::showEndgameHumanRivalWon() {
@@ -192,7 +199,7 @@ void MainWindow::showEndgameHumanRivalWon() {
         "Flawless victory!",
         "Oh no"
     ).exec();
-    this->boardScene->endGame();
+    emit this->invokeEndgame();
 }
 
 void MainWindow::on_ruleButton_clicked()
@@ -244,7 +251,7 @@ void MainWindow::logMove(QString moveLine) {
 
 void MainWindow::on_loadButton_clicked()
 {
-    if (this->boardScene->hasActiveGame()) {
+    if (this->stateRef->hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете загрузить игру, ведь в данный момент вы уже играете. Закончите сперва текущую игру!");
     } else {
         QString fname = QFileDialog::getOpenFileName(this, tr("Load Game"),
@@ -266,7 +273,7 @@ void MainWindow::on_loadButton_clicked()
 
 void MainWindow::on_saveButton_clicked()
 {
-    if (!this->boardScene->hasActiveGame()) {
+    if (!this->stateRef->hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете сохранить игру, ведь у вас нет игры. Начните сперва новую игру!");
     } else {
         QString fname = QFileDialog::getSaveFileName(
@@ -287,14 +294,14 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_offerDrawButton_clicked()
 {
-    if (this->boardScene->hasActiveGame()) {
-        if (this->boardScene->isDrawAvailable()) {
-            if (this->boardScene->isThereACPURival()) {
-                if (this->boardScene->requestCPURivalDrawAgreement()) {
-                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->boardScene->getRivalIndex()]);
-                    this->boardScene->endGame();
+    if (this->stateRef->hasActiveGame()) {
+        if (this->stateRef->isDrawAvailable()) {
+            if (this->stateRef->isThereACPURival()) {
+                if (this->stateRef->requestCPURivalDrawAgreement()) {
+                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->stateRef->getRivalIndex()]);
+                    emit this->invokeEndgame();
                 } else {
-                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->boardScene->getRivalIndex()]);
+                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->stateRef->getRivalIndex()]);
                 }
             } else {
                 if (
@@ -306,12 +313,13 @@ void MainWindow::on_offerDrawButton_clicked()
                     ) == QMessageBox::Yes
                 ) {
                     QMessageBox::information(this, "Friendship", "Friendship, friendship, again!");
-                    this->boardScene->endGame();
+                    emit this->invokeEndgame();
                 } else {
                     QMessageBox::warning(this, "Concurrency", "Concurrency, concurrency, again!");
                 }
             }
-            this->boardScene->setDrawAsOffered();
+            this->stateRef->setDrawOfferingState(true);
+            //this->boardScene->setDrawAsOffered();
         } else {
             QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете предложить ничью, ведь вы уже предлагали её на этом ходе! Попробуйте на следующем ходе.");
         }
@@ -324,7 +332,7 @@ void MainWindow::on_offerDrawButton_clicked()
 
 void MainWindow::on_surrenderButton_clicked()
 {
-    if (this->boardScene->hasActiveGame()) {
+    if (this->stateRef->hasActiveGame()) {
         if (
             QMessageBox::question(
                 this,
@@ -334,7 +342,7 @@ void MainWindow::on_surrenderButton_clicked()
             ) == QMessageBox::Yes
         ) {
             QMessageBox::critical(this, "Saatana vittu perkele", "what a dumbass");
-            this->boardScene->endGame();
+            emit this->invokeEndgame();
         }
     } else {
         QMessageBox::critical(this, "Saatana vittu perkele", "Ай-яй! Вы не можете сдаться, ведь у вас нет игры!");

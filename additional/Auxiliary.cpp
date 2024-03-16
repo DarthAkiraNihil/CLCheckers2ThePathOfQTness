@@ -124,3 +124,13 @@ CLCEngine::CheckerColor Auxiliary::generatePlayerSide() {
         return CLCEngine::CheckerColor::Black;
     }
 }
+
+CLCEngine::Coordinates Auxiliary::getInsertingPlace(CLCEngine::CheckerColor color, CLCEngine::Coordinates forPlace, int offset) {
+    if (color == CLCEngine::CheckerColor::Black) {
+        return {offset + (7 - forPlace.x) * 60, offset + forPlace.y * 60};
+        //beingDrawn->setPos((float) (9 + (7 - j) * 60), (float) (9 + i * 60));
+    } else {
+        return {offset + forPlace.x * 60, offset + (7 - forPlace.y) * 60};
+        //beingDrawn->setPos((float) (9 + j * 60), (float) (9 + (7 - i) * 60));
+    }
+}

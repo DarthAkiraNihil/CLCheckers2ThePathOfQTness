@@ -33,6 +33,7 @@ class Auxiliary
         static int convertDifficultyToIndex(CLCEngine::Difficulty difficulty);
         static CLCEngine::Difficulty getDifficultyByIndex(int index);
         static CLCEngine::CheckerColor generatePlayerSide();
+        static CLCEngine::Coordinates getInsertingPlace(CLCEngine::CheckerColor color, CLCEngine::Coordinates forPlace, int offset);
 
     //private:
 
