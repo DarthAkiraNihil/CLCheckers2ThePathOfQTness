@@ -25,7 +25,7 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
         MakeNewGameDialog* dialog;
         BoardScene* boardScene;
-        GameState* stateRef;
+        GameState state;
 
         AssetLoader loader;
 

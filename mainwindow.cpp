@@ -10,11 +10,12 @@
 MainWindow::MainWindow(QString assetsPath, QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    state(),
     loader(assetsPath) {
 
     ui->setupUi(this);
 
-    this->boardScene = new BoardScene(&loader);
+    this->boardScene = new BoardScene(&this->loader, &this->state);
     this->dialog = new MakeNewGameDialog(&loader);
 
     this->ui->boardView->setScene(this->boardScene);
@@ -28,7 +29,7 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
         &MainWindow::test
     );*/
 
-    this->stateRef = this->boardScene->getStateReference();
+    //this->stateRef = this->boardScene->getStateReference();
 
     //signal connection
     {
@@ -81,7 +82,7 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
         QObject::connect(
             this,
             &MainWindow::invokeEndgame,
-            this->stateRef, &GameState::endGame
+            &this->state, &GameState::endGame
         );
     }
 
@@ -112,12 +113,12 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_ngButton_clicked() {
-    if (!this->stateRef->hasActiveGame()) {
+    if (!this->state.hasActiveGame()) {
         GameParameters parameters = this->dialog->makeANewGame();
         qDebug() << "DIFF: " << (int) parameters.difficulty;
         if (this->dialog->getStatus() == QDialog::Accepted) {
             qDebug() << "JEB: Constructing a game";
-            this->stateRef->makeGame(parameters);
+            this->state.makeGame(parameters);
             //this->boardScene.setPlayerColor(this->gameBoard->whoIsPlayer());
             this->avatar1->drawAvatar(7);
             if (parameters.gameType == GameType::RivalIsAHuman) {
@@ -251,7 +252,7 @@ void MainWindow::logMove(QString moveLine) {
 
 void MainWindow::on_loadButton_clicked()
 {
-    if (this->stateRef->hasActiveGame()) {
+    if (this->state.hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете загрузить игру, ведь в данный момент вы уже играете. Закончите сперва текущую игру!");
     } else {
         QString fname = QFileDialog::getOpenFileName(this, tr("Load Game"),
@@ -273,7 +274,7 @@ void MainWindow::on_loadButton_clicked()
 
 void MainWindow::on_saveButton_clicked()
 {
-    if (!this->stateRef->hasActiveGame()) {
+    if (!this->state.hasActiveGame()) {
          QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете сохранить игру, ведь у вас нет игры. Начните сперва новую игру!");
     } else {
         QString fname = QFileDialog::getSaveFileName(
@@ -294,14 +295,14 @@ void MainWindow::on_saveButton_clicked()
 
 void MainWindow::on_offerDrawButton_clicked()
 {
-    if (this->stateRef->hasActiveGame()) {
-        if (this->stateRef->isDrawAvailable()) {
-            if (this->stateRef->isThereACPURival()) {
-                if (this->stateRef->requestCPURivalDrawAgreement()) {
-                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->stateRef->getRivalIndex()]);
+    if (this->state.hasActiveGame()) {
+        if (this->state.isDrawAvailable()) {
+            if (this->state.isThereACPURival()) {
+                if (this->state.requestCPURivalDrawAgreement()) {
+                    QMessageBox::information(this, "Успех!", AppConst::drawAcceptMessages[this->state.getRivalIndex()]);
                     emit this->invokeEndgame();
                 } else {
-                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->stateRef->getRivalIndex()]);
+                    QMessageBox::critical(this, "Не получилось :(", AppConst::drawDeclineMessages[this->state.getRivalIndex()]);
                 }
             } else {
                 if (
@@ -318,7 +319,7 @@ void MainWindow::on_offerDrawButton_clicked()
                     QMessageBox::warning(this, "Concurrency", "Concurrency, concurrency, again!");
                 }
             }
-            this->stateRef->setDrawOfferingState(true);
+            this->state.setDrawOfferingState(true);
             //this->boardScene->setDrawAsOffered();
         } else {
             QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете предложить ничью, ведь вы уже предлагали её на этом ходе! Попробуйте на следующем ходе.");
@@ -332,7 +333,7 @@ void MainWindow::on_offerDrawButton_clicked()
 
 void MainWindow::on_surrenderButton_clicked()
 {
-    if (this->stateRef->hasActiveGame()) {
+    if (this->state.hasActiveGame()) {
         if (
             QMessageBox::question(
                 this,

@@ -22,7 +22,7 @@ class BoardScene : public QGraphicsScene {
     Q_OBJECT
 
     public:
-        explicit BoardScene(AssetLoader* assetLoader, QObject *parent = nullptr);
+        BoardScene(AssetLoader* assetLoader, GameState* state, QObject *parent = nullptr);
         ~BoardScene();
 
         void renderContent();
@@ -79,7 +79,7 @@ class BoardScene : public QGraphicsScene {
         void makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int mSecDelay);
 
         AssetLoader* assetLoader;
-        GameState state;
+        GameState* state;
 
         //game state fields
         //int rivalIndex, step;
