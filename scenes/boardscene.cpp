@@ -204,7 +204,7 @@ void BoardScene::passTurn() {
             this->renderContent();
 
             if (!this->state->hasMoves()) {
-                //emit this->cpuRivalWon(AppConst::rivalVictoryMessages[this->rivalIndex]);
+                emit this->cpuRivalWon(AppConst::rivalVictoryMessages[this->state->getRivalIndex()]);
                 emit this->cpuRivalWon("FIX DA SHIT");
                 emit this->transferStatusBarText("Вы проиграли");
                 return;
@@ -264,76 +264,3 @@ void BoardScene::makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int 
         this->renderContent();
     }
 }
-
-//GameSaveData BoardScene::exportGameData() {
-    /*
-    GameSaveData saved;
-
-    CLCEngine::MetaArray savedBoard = this->gameBoard->makeMetaArray();
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            saved.boardData[i][j] = savedBoard[i][j];
-        }
-    }
-
-    saved.playerSide = this->playerSide;
-    saved.currentMover = this->gameBoard->whoMoves();
-
-    CLCEngine::Coordinates painCheckersCount = this->gameBoard->getCheckersCount();
-    saved.checkersCount[0] = painCheckersCount.x;
-    saved.checkersCount[1] = painCheckersCount.y;
-
-    if (!this->rival) {
-        saved.maxDepth = CLCEngine::Difficulty::Human;
-        saved.side = Auxiliary::invertColor(this->playerSide);
-        saved.gameType = GameType::RivalIsAHuman;
-    } else {
-        saved.maxDepth = this->rival->getMaxDepth();
-        saved.side = this->rival->getSide();
-        saved.gameType = GameType::RivalIsACPU;
-    }
-
-
-    for (int i = 0; i < 8; i++) {
-        delete savedBoard[i];
-    }
-
-    delete [] savedBoard;
-
-    //saved.gameType =
-
-    return saved;
-
-    */
-    //qDebug() << "NOT IMPLEMENTED YET";
-    //return {};
-//}
-
-//void BoardScene::importGameData(GameSaveData save) {
-
-//        this->gameBoard = new CLCEngine::Board(
-//                              save.playerSide,
-//                              save.currentMover,
-//                              save.checkersCount
-//                          );
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                this->gameBoard->assignCheckerExternal(save.boardData[i][j]);
-//            }
-//        }
-
-//        this->rival = (save.gameType == GameType::RivalIsACPU) ?
-//                       this->constructRival(
-//                           save.maxDepth,
-//                           Auxiliary::invertColor(save.playerSide)
-//                       ) :
-//                       nullptr;
-//        this->playerSide = save.playerSide;
-//        this->activeMetaArray = this->gameBoard->makeMetaArray();
-//        this->isGameBegun = true;
-//        this->renderContent();
-
-//qDebug() << "NOT IMPLEMENTED YET";
-
-//}
