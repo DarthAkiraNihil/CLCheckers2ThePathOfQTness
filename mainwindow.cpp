@@ -11,6 +11,7 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     state(),
+    logger(),
     loader(assetsPath) {
 
     ui->setupUi(this);
@@ -74,8 +75,8 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
             &MainWindow::changeStatusBarText
         );
         QObject::connect(
-            this->boardScene,
-            &BoardScene::transferMoveLogLine,
+            &this->logger,
+            &PartyLogger::logLineCommited,
             this,
             &MainWindow::logMove
         );
@@ -83,6 +84,21 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
             this,
             &MainWindow::invokeEndgame,
             &this->state, &GameState::endGame
+        );
+        QObject::connect(
+            this->boardScene,
+            &BoardScene::registerMove,
+            &this->logger, &PartyLogger::registerMove
+        );
+        QObject::connect(
+            this->boardScene,
+            &BoardScene::registerSequence,
+            &this->logger, &PartyLogger::registerSequence
+        );
+        QObject::connect(
+            this->boardScene,
+            &BoardScene::commitLogLine,
+            &this->logger, &PartyLogger::commitLogLine
         );
     }
 

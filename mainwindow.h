@@ -4,6 +4,7 @@
 #include "makenewgamedialog.h"
 #include <scenes/avatarscene.h>
 #include <scenes/boardscene.h>
+#include <additional/PartyLogger.h>
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <QTimer>
@@ -26,7 +27,7 @@ class MainWindow : public QMainWindow {
         MakeNewGameDialog* dialog;
         BoardScene* boardScene;
         GameState state;
-
+        PartyLogger logger;
         AssetLoader loader;
 
         void keyPressEvent(QKeyEvent *event);

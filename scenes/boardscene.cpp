@@ -189,7 +189,7 @@ void BoardScene::handleClickDestinationSelected() {
         this->destination
     );
     this->state->resetPathmap();
-    this->registerMove(moveToMake);
+    emit this->registerMove(moveToMake);
 
     this->state->appendMove(moveToMake);
 
@@ -198,12 +198,13 @@ void BoardScene::handleClickDestinationSelected() {
     this->state->filterNearestMovesWith(moveToMake);
 
     if (this->state->noNearestMoves()) {
-        this->gameLog.append(this->currentLogLine);
-        qDebug() << "JEB: Made move: " << this->currentLogLine.c_str();
+        emit this->commitLogLine();
+        //this->gameLog.append(this->currentLogLine);
+        //qDebug() << "JEB: Made move: " << this->currentLogLine.c_str();
         //QString conv = this->currentLogLine
-        emit this->transferMoveLogLine(this->currentLogLine.c_str());
+        //emit this->transferMoveLogLine(this->currentLogLine.c_str());
         this->state->commitMove();
-        this->currentLogLine.clear();
+        //this->currentLogLine.clear();
         this->renderContent();
     }
 
@@ -234,11 +235,13 @@ void BoardScene::passTurn() {
             CLCEngine::MoveList theBestSequence = this->state->makeRegularCPUMove();
 
 
-            emit this->transferMoveLogLine(this->currentLogLine.c_str());
-            this->currentLogLine.clear();
+            emit this->commitLogLine();
+//            emit this->transferMoveLogLine(this->currentLogLine.c_str());
+//            this->currentLogLine.clear();
 
             this->makeASequenceWithDelayOnMeta(theBestSequence, 400);
             this->state->commitCPUMove(theBestSequence);
+
 //            this->gameBoard->makeASequence(theBestSequence);
 //            this->gameBoard->flushLists();
 //            this->gameBoard->passTurn(); //send delete > controller
@@ -250,9 +253,11 @@ void BoardScene::passTurn() {
 
 //            this->activeMetaArray = this->gameBoard->makeMetaArray();
 
-            this->registerSequence(theBestSequence);
-            qDebug() << "JEB: Made CPU sequence: " << this->currentLogLine.c_str();
-            this->gameLog.append(this->currentLogLine);
+            emit this->registerSequence(theBestSequence);
+            emit this->commitLogLine();
+           // this->registerSequence(theBestSequence);
+            //qDebug() << "JEB: Made CPU sequence: " << this->currentLogLine.c_str();
+            //this->gameLog.append(this->currentLogLine);
 
             this->renderContent();
             //QApplication::pro
@@ -436,41 +441,8 @@ qDebug() << "NOT IMPLEMENTED YET";
 //    this->drawHasBeenOffered = true;
 //}
 
-void BoardScene::writeLog(std::string filename) {
-    std::fstream out;
-    out.open(filename, std::ios::out);
-    for (int i = 0; i < this->gameLog.getLength(); i++) {
-        out << this->gameLog.getElement(i) << "\n";
-    }
-    out.close();
-    this->gameLog.clear();
-}
-
-CLCEngine::Coordinates BoardScene::getNotationSquareCoordinates(CLCEngine::Coordinates place) {
-    return {61 + place.x, 49 + place.y};
-}
-
-void BoardScene::registerMove(CLCEngine::Move move) {
-    CLCEngine::Coordinates
-       src = move.getSource(),
-       dst = move.getDestination();
-    if (this->currentLogLine.empty()) {
-        this->currentLogLine += 'a' + src.x;
-        this->currentLogLine += '1' + src.y;
-        this->currentLogLine += (move.getVictimMetaInfo() == CLCEngine::NO_VICTIM) ? '-' : ':';
-        this->currentLogLine += 'a' + dst.x;
-        this->currentLogLine += '1' + dst.y;
-    } else {
-        this->currentLogLine += (move.getVictimMetaInfo() == CLCEngine::NO_VICTIM) ? '-' : ':';
-        this->currentLogLine += 'a' + dst.x;
-        this->currentLogLine += '1' + dst.y;
-    }
-}
-
-void BoardScene::registerSequence(CLCEngine::MoveList& sequence) {
-    for (int i = 0; i < sequence.getLength(); i++) {
-        this->registerMove(sequence.getElement(i));
-    }
-}
 
 
+//CLCEngine::Coordinates BoardScene::getNotationSquareCoordinates(CLCEngine::Coordinates place) {
+//    return {61 + place.x, 49 + place.y};
+//}

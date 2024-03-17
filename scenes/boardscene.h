@@ -45,7 +45,7 @@ class BoardScene : public QGraphicsScene {
 
 
         QString getSurrenderMessage();
-        GameState* getStateReference();
+        //GameState* getStateReference();
         //bool hasActiveGame();
 
     private:
@@ -96,13 +96,13 @@ class BoardScene : public QGraphicsScene {
         //pixmap res
         std::vector<QGraphicsPixmapItem*> activePixmaps{};
 
-        CLCEngine::DynamicSequence<std::string> gameLog{};
-        std::string currentLogLine{};
+//        CLCEngine::DynamicSequence<std::string> gameLog{};
+//        std::string currentLogLine{};
 
-        void writeLog(std::string filename);
-        CLCEngine::Coordinates getNotationSquareCoordinates(CLCEngine::Coordinates place);
-        void registerMove(CLCEngine::Move move);
-        void registerSequence(CLCEngine::MoveList& sequence);
+//        void writeLog(std::string filename);
+//        CLCEngine::Coordinates getNotationSquareCoordinates(CLCEngine::Coordinates place);
+//        void registerMove(CLCEngine::Move move);
+//        void registerSequence(CLCEngine::MoveList& sequence);
 
         QTimer* forcedRenderTimeout;
 
@@ -114,6 +114,10 @@ class BoardScene : public QGraphicsScene {
         void humanRivalWon();
         void transferStatusBarText(QString text);
         void transferMoveLogLine(QString line);
+
+        void registerMove(CLCEngine::Move move);
+        void registerSequence(CLCEngine::MoveList sequence);
+        void commitLogLine();
 
     private slots:
         void forceRendering();
