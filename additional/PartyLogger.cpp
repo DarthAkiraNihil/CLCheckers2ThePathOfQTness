@@ -33,12 +33,9 @@ void PartyLogger::registerSequence(CLCEngine::MoveList sequence) {
 void PartyLogger::commitLogLine() {
     this->gameLog.append(this->currentLogLine);
     qDebug() << "JEB: Made move: " << this->currentLogLine.c_str();
-    //QString conv = this->currentLogLine
     if (!this->currentLogLine.empty())
     emit this->logLineCommited(this->currentLogLine.c_str());
-    //this->state->commitMove();
     this->currentLogLine.clear();
-    //this->renderContent();
 }
 
 void PartyLogger::writeLog(std::string filename) {

@@ -16,24 +16,10 @@
 BoardScene::BoardScene(AssetLoader* assetLoader, GameState* state, QObject *parent): QGraphicsScene{parent} {
     this->assetLoader = assetLoader;
     this->state = state;
-
-    //this->playerSide = CLCEngine::CheckerColor::NoColor;
-    //this->activeMetaArray = nullptr;
-    //this->gameBoard = nullptr;
-    //this->rival = nullptr;
     this->cursor = {0, 0};
 
-    //this->resetPathmap();
-    //this->moveHasBeenMade = false;
-    //this->movesHaveBeenFound = false;
-
-    //this->isGameBegun = false;
-    //this->drawHasBeenOffered = false;
-    //this->step = 0;
-    //this->rivalIndex = -1;
     QGraphicsPixmapItem *logo = this->addPixmap(this->assetLoader->getLogo());
     logo->setPos(117, 117);
-
 
     this->forcedRenderTimeout = new QTimer;
     QObject::connect(this->forcedRenderTimeout, &QTimer::timeout, this, &BoardScene::forceRendering);
@@ -41,8 +27,7 @@ BoardScene::BoardScene(AssetLoader* assetLoader, GameState* state, QObject *pare
 }
 
 BoardScene::~BoardScene() {
-    //delete this->gameBoard;
-    //delete this->rival;
+    delete this->forcedRenderTimeout;
 }
 
 void BoardScene::forceRendering() {
@@ -50,7 +35,6 @@ void BoardScene::forceRendering() {
 }
 
 void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-        //QPointF clicked = event->scenePos();
     if (this->state->hasActiveGame()) {
         CLCEngine::Coordinates clicked = Auxiliary::convertSceneToBoard(
             event->scenePos(),
@@ -67,8 +51,6 @@ void BoardScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
         }
 
         this->handleClick();
-
-
 
         emit this->clickHasBeenSomewhere(clicked);
     }
@@ -115,12 +97,6 @@ void BoardScene::renderBoard() {
                     9
                 );
                 beingDrawn->setPos((float) insertPlace.x, (float) insertPlace.y);
-                //if (this->playerSide == CLCEngine::CheckerColor::Black) {
-                //    beingDrawn->setPos((float) (9 + (7 - j) * 60), (float) (9 + i * 60));
-                //} else {
-                //    beingDrawn->setPos((float) (9 + j * 60), (float) (9 + (7 - i) * 60));
-                //}
-
             }
         }
     }
@@ -164,7 +140,6 @@ void BoardScene::handleClick() {
     } else {
         this->handleClickNotDestinationSelected();
     }
-    //this->update(this->sceneRect());
 
     if (this->state->hasMoveBeenMade()) {
         this->passTurn();
@@ -199,12 +174,7 @@ void BoardScene::handleClickDestinationSelected() {
 
     if (this->state->noNearestMoves()) {
         emit this->commitLogLine();
-        //this->gameLog.append(this->currentLogLine);
-        //qDebug() << "JEB: Made move: " << this->currentLogLine.c_str();
-        //QString conv = this->currentLogLine
-        //emit this->transferMoveLogLine(this->currentLogLine.c_str());
         this->state->commitMove();
-        //this->currentLogLine.clear();
         this->renderContent();
     }
 
@@ -221,51 +191,19 @@ void BoardScene::passTurn() {
                 emit this->transferStatusBarText("Вы победили!");
                 return;
             }
-            //this->gameBoard->findAvailableMoves();
-//
-            //if (this->gameBoard->noMovesNow()) {
-            //    qDebug() << "JEB: You won";
-            //    emit this->playerWon();
-             //   emit this->transferStatusBarText("Вы победили!");
-            //    return;
-            //}
-//
-            //this->gameBoard->flushLists();
 
             CLCEngine::MoveList theBestSequence = this->state->makeRegularCPUMove();
 
-
             emit this->commitLogLine();
-//            emit this->transferMoveLogLine(this->currentLogLine.c_str());
-//            this->currentLogLine.clear();
-
             this->makeASequenceWithDelayOnMeta(theBestSequence, 400);
             this->state->commitCPUMove(theBestSequence);
 
-//            this->gameBoard->makeASequence(theBestSequence);
-//            this->gameBoard->flushLists();
-//            this->gameBoard->passTurn(); //send delete > controller
-
-//            for (int i = 0; i < 8; i++) {
-//                delete [] this->activeMetaArray[i];
-//            }
-//            delete [] this->activeMetaArray;
-
-//            this->activeMetaArray = this->gameBoard->makeMetaArray();
-
             emit this->registerSequence(theBestSequence);
             emit this->commitLogLine();
-           // this->registerSequence(theBestSequence);
-            //qDebug() << "JEB: Made CPU sequence: " << this->currentLogLine.c_str();
-            //this->gameLog.append(this->currentLogLine);
 
             this->renderContent();
-            //QApplication::pro
-//            this->moveHasBeenMade = false;
 
-//            this->gameBoard->findAvailableMoves();
             if (!this->state->hasMoves()) {
-
                 //emit this->cpuRivalWon(AppConst::rivalVictoryMessages[this->rivalIndex]);
                 emit this->cpuRivalWon("FIX DA SHIT");
                 emit this->transferStatusBarText("Вы проиграли");
@@ -276,16 +214,6 @@ void BoardScene::passTurn() {
             emit this->transferStatusBarText("Ход игрока");
 
         } else {
-//            for (int i = 0; i < 8; i++) {
-//                delete [] this->activeMetaArray[i];
-//            }
-//            delete [] this->activeMetaArray;
-
-//            this->activeMetaArray = this->gameBoard->makeMetaArray();
-//            this->moveHasBeenMade = false;
-
-            //this->gameBoard->findAvailableMoves();
-
             if (this->state->currentMover() == this->state->whoIsPlayer()) {
                 emit this->transferStatusBarText("Ход игрока");
             } else {
@@ -303,12 +231,6 @@ void BoardScene::passTurn() {
                     return;
                 }
             }
-
-            //if (this->gameBoard->noMovesNow()) {
-
-            //}
-
-            //this->gameBoard->flushLists();
         }
         this->state->setDrawOfferingState(false);
     }
@@ -321,7 +243,6 @@ void BoardScene::moveCursor(CLCEngine::Coordinates direction) {
         this->cursor.x + direction.x,
         this->cursor.y + direction.y
     };
-    //qDebug() << newCursor.x << " " << newCursor.y;
     if (
         (newCursor.x > -1) &&
         (newCursor.y > -1) &&
@@ -341,11 +262,8 @@ void BoardScene::makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int 
         QThread::msleep(mSecDelay);
         this->update(0, 0, 488, 488);
         this->renderContent();
-        //Sleep(mSecDelay);
-
-
     }
-   }
+}
 
 GameSaveData BoardScene::exportGameData() {
     /*
@@ -419,30 +337,3 @@ void BoardScene::importGameData(GameSaveData save) {
 qDebug() << "NOT IMPLEMENTED YET";
 
 }
-
-//void BoardScene::endGame() {
-
-    //this->writeLog("test.log");
-//}
-
-//bool BoardScene::requestCPURivalDrawAgreement() {
-//    return glist(eng) < AppConst::cpuDrawChances[this->rivalIndex];
-//}
-
-//int BoardScene::getRivalIndex() {
-//    return this->rivalIndex;
-//}
-
-//bool BoardScene::isDrawAvailable() {
-//    return !this->drawHasBeenOffered;
-//}
-
-//void BoardScene::setDrawAsOffered() {
-//    this->drawHasBeenOffered = true;
-//}
-
-
-
-//CLCEngine::Coordinates BoardScene::getNotationSquareCoordinates(CLCEngine::Coordinates place) {
-//    return {61 + place.x, 49 + place.y};
-//}

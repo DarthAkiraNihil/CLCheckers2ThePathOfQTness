@@ -20,50 +20,6 @@ GameState::~GameState() {
     delete this->rival;
 }
 
-void GameState::makeFirstCPUMove() {
-    this->gameBoard->flushLists();
-    this->gameBoard->findAvailableMoves();
-
-    CLCEngine::MoveList theBestSequence = this->rival->getNextSequence(*(this->gameBoard));
-    //this->makeASequenceWithDelayOnMeta(this->activeMetaArray, theBestSequence, 800);
-    this->gameBoard->makeASequence(theBestSequence);
-    this->gameBoard->flushLists();
-    this->gameBoard->passTurn();
-
-    for (int i = 0; i < 8; i++) {
-        delete [] this->activeMetaArray[i];
-    }
-    delete [] this->activeMetaArray;
-
-    this->activeMetaArray = this->gameBoard->makeMetaArray();
-}
-
-CLCEngine::CheckerColor GameState::getPlayerSide() {
-    return this->playerSide;
-}
-
-CLCEngine::CheckerMetaInfo GameState::getMetaInfo(CLCEngine::Coordinates at) {
-    return this->activeMetaArray[at.y][at.x];
-}
-
-PathMapMarker GameState::getPathMapMarker(CLCEngine::Coordinates at) {
-    return this->pathMap[at.y][at.x];
-}
-
-CLCEngine::Move GameState::getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination) {
-    for (int i = 0; i < this->nearestMoves.getLength(); i++) {
-        CLCEngine::Move move = this->nearestMoves.getElement(i);
-        if (move.getSource() == source && move.getDestination() == destination) {
-            return move;
-        }
-    }
-    return {};
-}
-
-bool GameState::isThereACPURival() {
-    return this->rival;
-}
-
 void GameState::setAsNull() {
     this->playerSide = CLCEngine::CheckerColor::NoColor;
     this->activeMetaArray = nullptr;
@@ -78,18 +34,6 @@ void GameState::setAsNull() {
     this->drawHasBeenOffered = false;
     this->step = 0;
     this->rivalIndex = -1;
-}
-
-bool GameState::hasActiveGame() {
-    return this->isGameBegun;
-}
-
-bool GameState::hasMoves() {
-    bool result;
-    this->gameBoard->findAvailableMoves();
-    result = !this->gameBoard->noMovesNow();
-    this->gameBoard->flushLists();
-    return result;
 }
 
 void GameState::resetPathmap() {
@@ -144,6 +88,85 @@ void GameState::endGame() {
     this->setAsNull();
 }
 
+void GameState::makeFirstCPUMove() {
+    this->gameBoard->flushLists();
+    this->gameBoard->findAvailableMoves();
+
+    CLCEngine::MoveList theBestSequence = this->rival->getNextSequence(*(this->gameBoard));
+    //this->makeASequenceWithDelayOnMeta(this->activeMetaArray, theBestSequence, 800);
+    this->gameBoard->makeASequence(theBestSequence);
+    this->gameBoard->flushLists();
+    this->gameBoard->passTurn();
+
+    for (int i = 0; i < 8; i++) {
+        delete [] this->activeMetaArray[i];
+    }
+    delete [] this->activeMetaArray;
+
+    this->activeMetaArray = this->gameBoard->makeMetaArray();
+}
+
+bool GameState::hasMoveBeenMade() {
+    return this->moveHasBeenMade;
+}
+
+bool GameState::hasMoves() {
+    bool result;
+    this->gameBoard->findAvailableMoves();
+    result = !this->gameBoard->noMovesNow();
+    this->gameBoard->flushLists();
+    return result;
+}
+
+bool GameState::isDrawAvailable() {
+    return !this->drawHasBeenOffered;
+}
+
+bool GameState::isThereACPURival() {
+    return this->rival;
+}
+
+bool GameState::noNearestMoves() {
+    return this->nearestMoves.getLength() == 0;
+}
+
+bool GameState::hasActiveGame() {
+    return this->isGameBegun;
+}
+
+CLCEngine::CheckerMetaInfo GameState::getMetaInfo(CLCEngine::Coordinates at) {
+    return this->activeMetaArray[at.y][at.x];
+}
+
+PathMapMarker GameState::getPathMapMarker(CLCEngine::Coordinates at) {
+    return this->pathMap[at.y][at.x];
+}
+
+CLCEngine::Move GameState::getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination) {
+    for (int i = 0; i < this->nearestMoves.getLength(); i++) {
+        CLCEngine::Move move = this->nearestMoves.getElement(i);
+        if (move.getSource() == source && move.getDestination() == destination) {
+            return move;
+        }
+    }
+    return {};
+}
+
+CLCEngine::CheckerColor GameState::getPlayerSide() {
+    return this->playerSide;
+}
+
+CLCEngine::CheckerColor GameState::whoIsPlayer() {
+    return this->gameBoard->whoIsPlayer();
+}
+CLCEngine::CheckerColor GameState::currentMover() {
+    return this->gameBoard->whoMoves();
+}
+
+int GameState::getRivalIndex() {
+    return this->rivalIndex;
+}
+
 void GameState::findMovesIfRequired() {
     if (!this->movesHaveBeenFound) {
 
@@ -173,27 +196,6 @@ void GameState::fillPathMap(CLCEngine::Coordinates source) {
     }
 }
 
-void GameState::appendMove(CLCEngine::Move move) {
-    this->currentSequence.append(move);
-    this->applyMoveOnMetaArray(move);
-    this->step++;
-}
-
-void GameState::applyMoveOnMetaArray(CLCEngine::Move move) {
-    CLCEngine::Coordinates src = move.getSource(), dst = move.getDestination();
-    this->activeMetaArray[dst.y][dst.x] = this->activeMetaArray[src.y][src.x];
-
-    this->activeMetaArray[src.y][src.x].color = CLCEngine::CheckerColor::NoColor;
-    this->activeMetaArray[src.y][src.x].type = CLCEngine::CheckerType::NoType;
-    this->activeMetaArray[src.y][src.x].markedForDeath = false;
-
-    this->activeMetaArray[dst.y][dst.x].coordinates = dst;
-    CLCEngine::CheckerMetaInfo victim = move.getVictimMetaInfo();
-    if (!(victim == CLCEngine::NO_VICTIM)) {
-        this->activeMetaArray[victim.coordinates.y][victim.coordinates.x].markedForDeath = true;
-    }
-}
-
 void GameState::filterNearestMovesWith(CLCEngine::Move move) {
     this->nearestMoves = this->filter(move);
 }
@@ -218,8 +220,25 @@ CLCEngine::MoveList GameState::filter(CLCEngine::Move move) {
     return toReturn;
 }
 
-bool GameState::noNearestMoves() {
-    return this->nearestMoves.getLength() == 0;
+void GameState::appendMove(CLCEngine::Move move) {
+    this->currentSequence.append(move);
+    this->applyMoveOnMetaArray(move);
+    this->step++;
+}
+
+void GameState::applyMoveOnMetaArray(CLCEngine::Move move) {
+    CLCEngine::Coordinates src = move.getSource(), dst = move.getDestination();
+    this->activeMetaArray[dst.y][dst.x] = this->activeMetaArray[src.y][src.x];
+
+    this->activeMetaArray[src.y][src.x].color = CLCEngine::CheckerColor::NoColor;
+    this->activeMetaArray[src.y][src.x].type = CLCEngine::CheckerType::NoType;
+    this->activeMetaArray[src.y][src.x].markedForDeath = false;
+
+    this->activeMetaArray[dst.y][dst.x].coordinates = dst;
+    CLCEngine::CheckerMetaInfo victim = move.getVictimMetaInfo();
+    if (!(victim == CLCEngine::NO_VICTIM)) {
+        this->activeMetaArray[victim.coordinates.y][victim.coordinates.x].markedForDeath = true;
+    }
 }
 
 void GameState::commitMove() {
@@ -235,13 +254,7 @@ void GameState::commitMove() {
         delete [] this->activeMetaArray[i];
     }
     delete [] this->activeMetaArray;
-    //this->currentLogLine.clear();
-
     this->activeMetaArray = this->gameBoard->makeMetaArray();
-}
-
-bool GameState::hasMoveBeenMade() {
-    return this->moveHasBeenMade;
 }
 
 CLCEngine::MoveList GameState::makeRegularCPUMove() {
@@ -256,6 +269,7 @@ CLCEngine::MoveList GameState::makeRegularCPUMove() {
 
     return theBestSequence;
 }
+
 void GameState::commitCPUMove(CLCEngine::MoveList sequence) {
     this->gameBoard->makeASequence(sequence);
     this->gameBoard->flushLists();
@@ -269,13 +283,6 @@ void GameState::commitCPUMove(CLCEngine::MoveList sequence) {
     this->activeMetaArray = this->gameBoard->makeMetaArray();
 
     this->moveHasBeenMade = false;
-}
-
-CLCEngine::CheckerColor GameState::whoIsPlayer() {
-    return this->gameBoard->whoIsPlayer();
-}
-CLCEngine::CheckerColor GameState::currentMover() {
-    return this->gameBoard->whoMoves();
 }
 
 void GameState::flushMetaArray() {
@@ -294,12 +301,4 @@ void GameState::setDrawOfferingState(bool state) {
 
 bool GameState::requestCPURivalDrawAgreement() {
     return glist(eng) < AppConst::cpuDrawChances[this->rivalIndex];
-}
-
-bool GameState::isDrawAvailable() {
-    return !this->drawHasBeenOffered;
-}
-
-int GameState::getRivalIndex() {
-    return this->rivalIndex;
 }

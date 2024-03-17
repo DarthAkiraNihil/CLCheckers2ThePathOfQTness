@@ -6,15 +6,11 @@
 #ifndef AUXULIARY_H
 #define AUXULIARY_H
 
-//const CLCEngine::Coordinates INVALID_PLACE = {-1, -1};
-
 class Auxiliary
 {
 
 
     public:
-        //static void auxLoadAssets(QString assetsPath);
-        //static int auxGetAssetIndex(CLCEngine::CheckerMetaInfo metaInfo);
         static CLCEngine::Coordinates convertSceneToBoard(
             QPointF clickedPlace,
             CLCEngine::Coordinates borderConstraintBottom,
@@ -34,8 +30,6 @@ class Auxiliary
         static CLCEngine::Difficulty getDifficultyByIndex(int index);
         static CLCEngine::CheckerColor generatePlayerSide();
         static CLCEngine::Coordinates getInsertingPlace(CLCEngine::CheckerColor color, CLCEngine::Coordinates forPlace, int offset);
-
-    //private:
 
 };
 

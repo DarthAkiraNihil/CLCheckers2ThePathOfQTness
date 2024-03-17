@@ -15,19 +15,26 @@ class GameState: public QObject
         GameState();
         ~GameState();
 
-        bool hasActiveGame();
         void resetPathmap();
         void makeGame(GameParameters parameters);
-        bool isThereACPURival();
-        bool noNearestMoves();
         void makeFirstCPUMove();
+
         bool hasMoveBeenMade();
         bool hasMoves();
         bool isDrawAvailable();
+        bool isThereACPURival();
+        bool noNearestMoves();
+        bool hasActiveGame();
 
         CLCEngine::CheckerMetaInfo getMetaInfo(CLCEngine::Coordinates at);
         PathMapMarker getPathMapMarker(CLCEngine::Coordinates at);
         CLCEngine::Move getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination);
+        CLCEngine::CheckerColor getPlayerSide();
+
+        CLCEngine::CheckerColor whoIsPlayer();
+        CLCEngine::CheckerColor currentMover();
+
+        int getRivalIndex();
 
         void findMovesIfRequired();
         void fillPathMap(CLCEngine::Coordinates source);
@@ -38,24 +45,16 @@ class GameState: public QObject
 
         void commitMove();
 
-        CLCEngine::CheckerColor whoIsPlayer();
-        CLCEngine::CheckerColor currentMover();
-
         CLCEngine::MoveList makeRegularCPUMove();
         void commitCPUMove(CLCEngine::MoveList sequence);
         void flushMetaArray();
 
-        CLCEngine::CheckerColor getPlayerSide();
-
         void setDrawOfferingState(bool state);
         bool requestCPURivalDrawAgreement();
 
-        int getRivalIndex();
+
     private:
         void setAsNull();
-
-
-
         CLCEngine::MoveList filter(CLCEngine::Move move);
 
         CLCEngine::Board* makeBoard(CLCEngine::CheckerColor playerSide);
@@ -63,6 +62,7 @@ class GameState: public QObject
             CLCEngine::Difficulty difficulty,
             CLCEngine::CheckerColor side
         );
+
         int rivalIndex, step;
         CLCEngine::CheckerColor playerSide;
         CLCEngine::Board* gameBoard;
@@ -72,6 +72,7 @@ class GameState: public QObject
         bool movesHaveBeenFound, moveHasBeenMade, isGameBegun, drawHasBeenOffered;
         CLCEngine::MoveList currentSequence{}, nearestMoves{};
         CLCEngine::MoveSequencesList nearestSequences{};
+
     public slots:
         void endGame();
 };

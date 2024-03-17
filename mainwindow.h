@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow {
         AssetLoader loader;
 
         void keyPressEvent(QKeyEvent *event);
-        void beginGame();
+
         AvatarScene *avatar1, *avatar2;
         QString playerName, rivalName;
     signals:
@@ -47,7 +47,6 @@ class MainWindow : public QMainWindow {
         void on_offerDrawButton_clicked();
         void on_surrenderButton_clicked();
 
-        //void causeUpdate();
 
         void setRivalAvatar(int index);
         void setPlayerName(QString name);

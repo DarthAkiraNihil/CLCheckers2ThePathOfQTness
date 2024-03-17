@@ -22,15 +22,6 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
     this->ui->boardView->setScene(this->boardScene);
 
     this->ui->boardView->setSceneRect(0, 0, 488, 488);
-    /*
-    QObject::connect(
-        &this->boardScene,
-        &BoardScene::clickHasBeenSomewhere,
-        this,
-        &MainWindow::test
-    );*/
-
-    //this->stateRef = this->boardScene->getStateReference();
 
     //signal connection
     {
@@ -135,7 +126,6 @@ void MainWindow::on_ngButton_clicked() {
         if (this->dialog->getStatus() == QDialog::Accepted) {
             qDebug() << "JEB: Constructing a game";
             this->state.makeGame(parameters);
-            //this->boardScene.setPlayerColor(this->gameBoard->whoIsPlayer());
             this->avatar1->drawAvatar(7);
             if (parameters.gameType == GameType::RivalIsAHuman) {
                 this->avatar2->drawAvatar(7);
@@ -336,7 +326,6 @@ void MainWindow::on_offerDrawButton_clicked()
                 }
             }
             this->state.setDrawOfferingState(true);
-            //this->boardScene->setDrawAsOffered();
         } else {
             QMessageBox::critical(nullptr, "Saatana vittu perkele", "Ай-яй! Вы не можете предложить ничью, ведь вы уже предлагали её на этом ходе! Попробуйте на следующем ходе.");
         }

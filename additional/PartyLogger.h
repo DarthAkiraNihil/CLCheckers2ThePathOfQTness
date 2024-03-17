@@ -25,8 +25,6 @@ class PartyLogger: public QObject
         void registerMove(CLCEngine::Move move);
         void registerSequence(CLCEngine::MoveList sequence);
         void commitLogLine();
-
-
 };
 
 #endif // PARTYLOGGER_H
