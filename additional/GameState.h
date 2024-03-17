@@ -2,6 +2,7 @@
 #include <auxTypes/pathmapmarker.h>
 #include <auxTypes/gameparameters.h>
 #include <QObject>
+#include <auxTypes/gamesavedata.h>
 
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
@@ -52,6 +53,8 @@ class GameState: public QObject
         void setDrawOfferingState(bool state);
         bool requestCPURivalDrawAgreement();
 
+        GameSaveData exportGameData();
+        void importGameData(GameSaveData save);
 
     private:
         void setAsNull();

@@ -271,7 +271,8 @@ void MainWindow::on_loadButton_clicked()
             else {
                 fread(&save, sizeof(GameSaveData), 1, inputDataStream);
                 fclose(inputDataStream);
-                this->boardScene->importGameData(save);
+                this->state.importGameData(save);
+                this->boardScene->renderContent();
             }
         }
     }
@@ -290,7 +291,7 @@ void MainWindow::on_saveButton_clicked()
             tr("Savefiles (*.sav)")
         );
         if (fname != "") {
-            GameSaveData save = this->boardScene->exportGameData();
+            GameSaveData save = this->state.exportGameData();
             FILE* saveStream = fopen(fname.toLocal8Bit().data(), "w+b");
             fwrite(&save, sizeof(GameSaveData), 1, saveStream);
             fclose(saveStream);

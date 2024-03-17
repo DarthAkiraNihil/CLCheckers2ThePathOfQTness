@@ -265,7 +265,7 @@ void BoardScene::makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int 
     }
 }
 
-GameSaveData BoardScene::exportGameData() {
+//GameSaveData BoardScene::exportGameData() {
     /*
     GameSaveData saved;
 
@@ -306,11 +306,11 @@ GameSaveData BoardScene::exportGameData() {
     return saved;
 
     */
-    qDebug() << "NOT IMPLEMENTED YET";
-    return {};
-}
+    //qDebug() << "NOT IMPLEMENTED YET";
+    //return {};
+//}
 
-void BoardScene::importGameData(GameSaveData save) {
+//void BoardScene::importGameData(GameSaveData save) {
 
 //        this->gameBoard = new CLCEngine::Board(
 //                              save.playerSide,
@@ -334,6 +334,6 @@ void BoardScene::importGameData(GameSaveData save) {
 //        this->isGameBegun = true;
 //        this->renderContent();
 
-qDebug() << "NOT IMPLEMENTED YET";
+//qDebug() << "NOT IMPLEMENTED YET";
 
-}
+//}

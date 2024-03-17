@@ -32,13 +32,14 @@ class BoardScene : public QGraphicsScene {
         void handleClick();
         void doTheFirstCPUMoveIfRequired();
 
-        GameSaveData exportGameData();
-        void importGameData(GameSaveData save);
+        //GameSaveData exportGameData();
+        //void importGameData(GameSaveData save);
 
         bool isDrawAvailable();
         void setDrawAsOffered();
         bool requestCPURivalDrawAgreement();
         QString getSurrenderMessage();
+        //void update
 
     private:
         void renderBoard();
@@ -70,6 +71,8 @@ class BoardScene : public QGraphicsScene {
         void registerMove(CLCEngine::Move move);
         void registerSequence(CLCEngine::MoveList sequence);
         void commitLogLine();
+
+
 
     private slots:
         void forceRendering();
