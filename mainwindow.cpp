@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <fstream>
 #include "constants.h"
 #include "./ui_mainwindow.h"
 
@@ -273,6 +275,35 @@ void MainWindow::on_loadButton_clicked()
                 fclose(inputDataStream);
                 this->state.importGameData(save);
                 this->boardScene->renderContent();
+
+                bool ok;
+                QString logSaveFile = QInputDialog::getText(
+                    this,
+                    "Стоять! А журнал откуда брать?",
+                    "Откуда вы хотите импортировать журнал партии? Оставьте пустым, если не хотите импортировать",
+                    QLineEdit::Normal,
+                    "party.txt",
+                    &ok
+                );
+
+                if (ok && !logSaveFile.isEmpty()) {
+                    CLCEngine::DynamicSequence<std::string> log;
+                    std::ifstream import(logSaveFile.toStdString());
+                    std::string line;
+                    if (import.is_open()) {
+                        while (std::getline(import, line)) {
+                            log.append(line);
+                        }
+                        import.close();
+                    } else {
+                        qDebug() << "Log file doesn't exist";
+                    }
+
+                    this->logger.importLog(log);
+                    for (int i = 0; i < log.getLength(); i++) {
+                        this->logMove(log.getElement(i).c_str());
+                    }
+                }
             }
         }
     }
@@ -295,8 +326,27 @@ void MainWindow::on_saveButton_clicked()
             FILE* saveStream = fopen(fname.toLocal8Bit().data(), "w+b");
             fwrite(&save, sizeof(GameSaveData), 1, saveStream);
             fclose(saveStream);
+
+        }
+
+        bool ok;
+        QString logSaveFile = QInputDialog::getText(
+            this,
+            "Стоять! А журнал куда деть?",
+            "Куда вы хотите экспортировать журнал партии? Оставьте пустым, если не хотите экспортировать",
+            QLineEdit::Normal,
+            "party.txt",
+            &ok
+        );
+
+        if (ok && !logSaveFile.isEmpty()) {
+            this->logger.writeLog(logSaveFile.toStdString());
         }
     }
+
+
+
+
 }
 
 

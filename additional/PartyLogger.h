@@ -19,12 +19,14 @@ class PartyLogger: public QObject
         CLCEngine::DynamicSequence<std::string> gameLog{};
         std::string currentLogLine{};
 
-        void writeLog(std::string filename);
+
         CLCEngine::Coordinates getNotationSquareCoordinates(CLCEngine::Coordinates place);
     public slots:
         void registerMove(CLCEngine::Move move);
         void registerSequence(CLCEngine::MoveList sequence);
         void commitLogLine();
+        void writeLog(std::string filename);
+        void importLog(CLCEngine::DynamicSequence<std::string> imported);
 };
 
 #endif // PARTYLOGGER_H

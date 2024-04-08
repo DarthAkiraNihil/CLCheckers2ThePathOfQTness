@@ -39,11 +39,23 @@ void PartyLogger::commitLogLine() {
 }
 
 void PartyLogger::writeLog(std::string filename) {
-    std::fstream out;
-    out.open(filename, std::ios::out);
-    for (int i = 0; i < this->gameLog.getLength(); i++) {
-        out << this->gameLog.getElement(i) << "\n";
+    std::ofstream out(filename);
+    if (!out.is_open()) {
+        qDebug() << "Error while opening the file";
+    } else {
+        for (int i = 0; i < this->gameLog.getLength(); i++) {
+            out << this->gameLog.getElement(i) << "\n";
+        }
+        out.close();
+        this->gameLog.clear();
     }
-    out.close();
-    this->gameLog.clear();
+    //out.open(filename, std::ios::out);
+
+
+}
+
+void PartyLogger::importLog(CLCEngine::DynamicSequence<std::string> imported) {
+    for (int i = 0; i < imported.getLength(); i++) {
+        this->gameLog.append(imported.getElement(i));
+    }
 }
