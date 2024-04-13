@@ -7,6 +7,8 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+#define ThisHouseIsPrivatizedFuckingNit private
+
 
 class GameState: public QObject
 {
