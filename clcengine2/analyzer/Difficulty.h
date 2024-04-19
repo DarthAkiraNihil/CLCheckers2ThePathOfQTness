@@ -13,7 +13,7 @@ namespace CLCEngine {
             Normal,
             Hard,
             Insane = 7,
-            Extreme
+            Extreme = 9
     };
 }
 

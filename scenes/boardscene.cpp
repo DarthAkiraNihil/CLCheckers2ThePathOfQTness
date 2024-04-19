@@ -205,7 +205,7 @@ void BoardScene::passTurn() {
 
             if (!this->state->hasMoves()) {
                 emit this->cpuRivalWon(AppConst::rivalVictoryMessages[this->state->getRivalIndex()]);
-                emit this->cpuRivalWon("FIX DA SHIT");
+                //emit this->cpuRivalWon("FIX DA SHIT");
                 emit this->transferStatusBarText("Вы проиграли");
                 return;
             }
