@@ -75,6 +75,7 @@ else()
             ${PROJECT_SOURCES}
             additional/AssetLoader.h additional/AssetLoader.cpp
             additional/PartyLogger.h additional/PartyLogger.cpp
+            resources.qrc
 
 
 

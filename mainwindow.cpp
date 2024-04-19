@@ -25,6 +25,8 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
 
     this->ui->boardView->setSceneRect(0, 0, 488, 488);
 
+    setWindowIcon(QIcon(":/appIconBig.ico"));
+
     //signal connection
     {
         QObject::connect(

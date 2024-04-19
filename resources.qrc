@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>appIconBig.ico</file>
+        <file>Button.png</file>
+        <file>PressedButton.png</file>
+        <file>bg.png</file>
+    </qresource>
+</RCC>

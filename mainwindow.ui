@@ -19,6 +19,43 @@
   <property name="windowTitle">
    <string>CLCheckers 2.0</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QMessageBox QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QMessageBox QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QMessageBox {
+	background-color: rgb(33, 33, 33);
+}
+
+QMessageBox QLabel {
+	color: white;
+}
+
+QMainWindow {
+	border-image: url(:/bg.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+}</string>
+  </property>
   <widget class="QWidget" name="central">
    <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
@@ -65,7 +102,8 @@
          <widget class="QLabel" name="playerLabel">
           <property name="styleSheet">
            <string notr="true">font: 700 9pt &quot;Segoe UI&quot;;
-text-decoration: underline;</string>
+text-decoration: underline;
+color: white</string>
           </property>
           <property name="text">
            <string>Вы</string>
@@ -89,6 +127,9 @@ text-decoration: underline;</string>
             <height>101</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(68, 68, 68);</string>
+          </property>
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -106,7 +147,9 @@ text-decoration: underline;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+           <string notr="true">font: 700 9pt &quot;Segoe UI&quot;;
+text-decoration: underline;
+color: white</string>
           </property>
           <property name="text">
            <string>Тут никого нет</string>
@@ -153,6 +196,9 @@ text-decoration: underline;</string>
           <height>490</height>
          </size>
         </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(68, 68, 68);</string>
+        </property>
         <property name="verticalScrollBarPolicy">
          <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
@@ -185,7 +231,8 @@ text-decoration: underline;</string>
          <widget class="QLabel" name="rivalLabel">
           <property name="styleSheet">
            <string notr="true">font: 700 9pt &quot;Segoe UI&quot;;
-text-decoration: underline;</string>
+text-decoration: underline;
+color: white</string>
           </property>
           <property name="text">
            <string>Противник</string>
@@ -209,6 +256,9 @@ text-decoration: underline;</string>
             <height>101</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(68, 68, 68);</string>
+          </property>
           <property name="verticalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -220,7 +270,9 @@ text-decoration: underline;</string>
         <item alignment="Qt::AlignHCenter">
          <widget class="QLabel" name="rivalName">
           <property name="styleSheet">
-           <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+           <string notr="true">font: 700 9pt &quot;Segoe UI&quot;;
+text-decoration: underline;
+color: white</string>
           </property>
           <property name="text">
            <string>Тут никого нет</string>
@@ -241,7 +293,8 @@ text-decoration: underline;</string>
          <widget class="QLabel" name="gameLogLabel">
           <property name="styleSheet">
            <string notr="true">font: 700 9pt &quot;Segoe UI&quot;;
-text-decoration: underline;</string>
+text-decoration: underline;
+color: white</string>
           </property>
           <property name="text">
            <string>Ход партии:</string>
@@ -252,7 +305,12 @@ text-decoration: underline;</string>
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="gameLog"/>
+         <widget class="QListWidget" name="gameLog">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(68, 68, 68);
+color: white;</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QVBoxLayout" name="menuButtons">
@@ -260,18 +318,63 @@ text-decoration: underline;</string>
            <layout class="QHBoxLayout" name="ngSaveLoad">
             <item>
              <widget class="QPushButton" name="ngButton">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>16</height>
+               </size>
+              </property>
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Новая игра</string>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="saveButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Сохранить</string>
@@ -281,7 +384,25 @@ text-decoration: underline;</string>
             <item>
              <widget class="QPushButton" name="loadButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Загрузить</string>
@@ -295,7 +416,25 @@ text-decoration: underline;</string>
             <item>
              <widget class="QPushButton" name="offerDrawButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Предложить ничью</string>
@@ -305,7 +444,25 @@ text-decoration: underline;</string>
             <item>
              <widget class="QPushButton" name="surrenderButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Сдаться</string>
@@ -319,7 +476,25 @@ text-decoration: underline;</string>
             <item>
              <widget class="QPushButton" name="ruleButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Правила</string>
@@ -329,7 +504,25 @@ text-decoration: underline;</string>
             <item>
              <widget class="QPushButton" name="controlsButton">
               <property name="styleSheet">
-               <string notr="true">font: 9pt &quot;Segoe UI&quot;;</string>
+               <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
               </property>
               <property name="text">
                <string>Управление</string>

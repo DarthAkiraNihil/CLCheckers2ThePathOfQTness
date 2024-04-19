@@ -13,6 +13,45 @@
   <property name="windowTitle">
    <string>Создание новой игры</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QInputDialog QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QInputDialog QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+
+}
+
+QInputDialog QLabel {
+	color: white;
+}
+
+QInputDialog QLineEdit {
+	background-color: rgb(33, 33, 33);
+}
+
+
+QInputDialog {
+	background-color: rgb(33, 33, 33);
+}
+
+QDialog {
+	background-color: rgb(33, 33, 33);
+}</string>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -25,11 +64,35 @@
      <height>32</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton {
+	border-image: url(:/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+   <property name="centerButtons">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox">
@@ -40,6 +103,11 @@
      <width>201</width>
      <height>24</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+background-color: rgb(81, 81, 81);
+color: rgb(255, 255, 255);</string>
    </property>
    <property name="editable">
     <bool>false</bool>
@@ -84,6 +152,10 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Выберите уровень сложности</string>
    </property>
@@ -97,6 +169,10 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Ознакомьтесь с противником</string>
    </property>
@@ -109,6 +185,10 @@
      <width>131</width>
      <height>61</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>Никто не выбран</string>
@@ -129,6 +209,11 @@
      <height>201</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(68, 68, 68);</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -142,6 +227,10 @@
      <height>41</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
    <property name="title">
     <string>Против кого играем?</string>
    </property>
@@ -153,6 +242,10 @@
       <width>141</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Против компьютера</string>
@@ -166,6 +259,10 @@
       <width>121</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Против человека</string>
@@ -184,6 +281,10 @@
      <height>41</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
    <property name="title">
     <string>За кого играем?</string>
    </property>
@@ -195,6 +296,10 @@
       <width>91</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Случайно</string>
@@ -212,6 +317,10 @@
       <height>22</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+    </property>
     <property name="text">
      <string>Белые</string>
     </property>
@@ -224,6 +333,10 @@
       <width>91</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
     </property>
     <property name="text">
      <string>Чёрные</string>
@@ -238,6 +351,11 @@
      <width>128</width>
      <height>128</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string>font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(68, 68, 68);</string>
    </property>
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -255,6 +373,10 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);</string>
+   </property>
    <property name="text">
     <string>Как вас зовут?</string>
    </property>
@@ -267,6 +389,11 @@
      <width>301</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 9pt &quot;Segoe UI&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(68, 68, 68);</string>
    </property>
   </widget>
  </widget>
