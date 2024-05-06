@@ -58,5 +58,6 @@ class MainWindow : public QMainWindow {
 
         void changeStatusBarText(QString text);
         void logMove(QString moveLine);
+        void on_aboutButton_clicked();
 };
 #endif // MAINWINDOW_H

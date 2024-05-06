@@ -25,7 +25,7 @@ MainWindow::MainWindow(QString assetsPath, QWidget *parent):
 
     this->ui->boardView->setSceneRect(0, 0, 488, 488);
 
-    setWindowIcon(QIcon(":/appIconBig.ico"));
+    setWindowIcon(QIcon(":/assets/appIconBig.ico"));
 
     //signal connection
     {
@@ -413,4 +413,17 @@ void MainWindow::changeStatusBarText(QString text) {
     this->ui->statusbar->showMessage(text);
 }
 
+
+
+void MainWindow::on_aboutButton_clicked()
+{
+    QMessageBox(
+        QMessageBox::Icon::Information,
+        "О программе",
+        "I've come to make an announcement\n\n"
+        "Shadow the Hedgehog's a bitch-ass motherfucker. He pissed on my fucking wife.\n\n"
+        "That's right. He pulled his fucking quillin' dick out and pissed on my fucking wife and then said that this was THIS BIG.\n\n"
+        "So I made a callout post on my Twitter.com. Shadow the hedgehog, you got a small dick. Its size is like this wallnut except WAY smaller. And guess what, this is how my dong looks like. BOOOOOMHHHH!"
+    ).exec();
+}
 

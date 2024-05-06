@@ -1,0 +1,294 @@
+@startuml SequenceOnMouseClick
+
+actor User as u
+participant BoardScene as bs
+participant GameState as gs
+participant Auxiliary as aux
+participant PatryLogger as pl
+participant MainWindow as mw
+participant Board as b
+participant AbstractComputerRival as acr
+
+
+activate u
+u -> bs: клик мышкой по полю
+
+activate bs
+activate gs
+activate aux
+activate b
+
+bs -> gs: hasActiveGame()
+gs --> bs: есть ли активная игра
+
+bs -> gs: getPlayerSide()
+gs --> bs: сторона игрока
+
+bs -> aux: convertSceneToBoard()
+aux --> bs: сконвертированные координаты (из сцены в доску)
+
+bs -> aux: convertBoardToCursor()
+aux --> bs: сконвертированные координаты (из доски в курсор)
+
+bs -> bs: renderContent()
+
+activate bs
+
+    bs -> bs: clear()
+    bs -> bs: renderBoard()
+    bs -> bs: renderPathmap()
+    bs -> bs: renderCursor()
+
+deactivate bs
+
+bs -> bs: handleClick()
+
+activate bs
+
+    bs -> gs: findMovesIfRequired()
+    gs --> bs: ходы найдены (если не были ранее)
+
+    bs -> aux: convertCursorToBoard()
+    aux --> bs: сконвертированные коориданты (из курсора в доску)
+
+    bs -> gs: getPathMapMarker()
+    gs --> bs: метка карты путей
+
+    bs -> bs: handleClickDestinationSelected
+
+    activate bs
+
+        bs -> aux: convertCursorToBoard()
+        aux --> bs: сконвертированные координаты (из курсора в доску)
+
+        bs -> gs: getMove()
+        gs --> bs: ход с выбранными координатам начала и конца его
+
+        bs -> gs: resetPathmap()
+        gs --> bs: карта путей сброшена
+
+        activate pl
+        bs -> pl: registerMove()
+        pl -> pl: registerMove()
+        pl --> bs: ход зарегистрирован
+        deactivate pl
+
+        bs -> gs: appendMove()
+        gs --> bs: ход добавлен в текущую цепочку
+
+        bs -> bs: renderContent()
+
+        activate bs
+
+            bs -> bs: clear()
+            bs -> bs: renderBoard()
+            bs -> bs: renderPathmap()
+            bs -> bs: renderCursor()
+
+        deactivate bs
+
+        bs -> gs: filterNearestMovesWith()
+        gs -> gs: filter()
+        gs --> bs: ходы отфильтрованы по сделанному ранее ходу
+
+        bs -> gs: noNearestMoves()
+        gs --> bs: нет ли ближайших ходов
+
+        bs -> pl: commitLogLine()
+
+        activate pl
+
+            pl -> pl: добавить текущую строку в журнал
+            pl -> mw: logLineCommited()
+            
+            activate mw
+
+                mw -> mw: logMove
+                mw --> pl: ход зарегистрирован
+
+            deactivate mw
+
+            pl -> pl: очистить текущую строку журнала
+
+            pl --> bs: строка хода зафиксирована
+
+        deactivate pl
+
+        
+
+        bs -> gs: commitMove()
+
+        activate gs
+
+        gs -> gs: сбросить состояние игры на начало хода
+
+        gs -> b: flushLists()
+        b --> gs: списки ходов очищены
+
+        gs -> b: makeASequence()
+        b --> gs: цепочка сделана
+
+        gs -> gs: очистить текущую цепочку
+
+        gs -> gs: resetPathmap()
+
+        gs -> gs: удаление старого метамассива
+
+        gs -> gs: makeMetaArray()
+
+        
+
+        gs --> bs: ход зафиксирован
+
+        deactivate gs
+
+        bs -> bs: renderContent()
+
+    deactivate bs
+
+    bs -> gs: hasMovebeenMade()
+    gs --> bs: был ли ход сделан
+
+    bs -> bs: passTurn()
+
+    activate bs
+
+        bs -> mw: transferStatusBarText()
+
+        activate mw
+
+            mw -> mw: changeStatusBarText()
+            mw --> bs: текст строки состояния изменён
+
+        deactivate mw
+
+        bs -> gs: makeRegularCPUMove()
+
+        activate gs
+
+            gs -> acr: getNextSequence()
+
+            activate acr
+
+                acr -> acr: analyze()
+                acr --> gs: результат анализа
+
+            deactivate acr
+
+
+
+            gs --> bs: лучшая цепочка ходов
+
+        deactivate gs
+
+        bs -> pl: commitLogLine()
+
+        activate pl
+
+            pl -> pl: append to log
+            pl -> mw: logLineCommited()
+            
+            activate mw
+
+                mw -> mw: logMove()
+                mw --> pl: ход записан
+
+            deactivate mw
+
+            pl -> pl: очистить текущую строку журнала
+
+            pl --> bs: строка хода зафиксирована
+
+        deactivate pl
+
+        bs -> bs: makeASequenceWithDelayOnMeta()
+
+        bs -> gs: commitCPUMove()
+
+        activate gs
+        
+            gs -> b: makeASequence()
+            b --> gs: цепочка сделана
+        
+            gs -> b: flushLists()
+            b --> gs: списки очищены
+        
+            gs -> b: passTurn()
+            b --> gs: ход передан
+
+            gs -> gs: удаление старого метамассива
+        
+            gs -> b: makeMetaArray()
+            b --> gs: новый метамассив
+
+            gs --> bs: ход компьютера зафиксирован
+
+        deactivate gs
+
+        bs -> pl: registerSequence()
+
+        activate pl
+
+            pl -> pl: registerSequence()
+            pl --> bs: цепочка зарегистрирована
+
+        deactivate pl
+
+        bs -> pl: commitLogLine()
+
+        activate pl
+
+            pl -> pl: добавить текущую строку в журнал
+            pl -> mw: logLineCommited()
+            
+            activate mw
+
+                mw -> mw: logMove
+                mw --> pl: ход записан
+
+            deactivate mw
+
+            pl -> pl: очистить текущую строку журнала
+
+            pl --> bs: строка хода зафиксирована
+
+        deactivate pl
+
+        bs -> bs: renderContent()
+
+        activate bs
+
+            bs -> bs: clear()
+            bs -> bs: renderBoard()
+            bs -> bs: renderPathmap()
+            bs -> bs: renderCursor()
+
+        deactivate bs
+
+        bs -> mw: transferStatusBarText
+
+        activate mw
+
+            mw -> mw: changeStatusBarText
+            mw --> bs: текст строки состояния изменён
+
+        deactivate mw
+
+        bs -> bs: выход
+
+
+    deactivate bs
+
+    bs -> bs: выход
+
+deactivate bs
+
+deactivate gs
+deactivate aux
+deactivate b
+
+bs --> u: обработано
+
+deactivate u
+
+@enduml

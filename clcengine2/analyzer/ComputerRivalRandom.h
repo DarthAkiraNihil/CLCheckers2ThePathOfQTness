@@ -9,6 +9,7 @@
 namespace CLCEngine {
 
     class ComputerRivalRandom: public AbstractComputerRival {
+        protected:
             AnalyzerContainer analyze(CLCEngine::Board *board, MetaArray boardMetaArray, int currentDepth) override;
             double eval(CLCEngine::MetaArray metaArray) override;
         public:

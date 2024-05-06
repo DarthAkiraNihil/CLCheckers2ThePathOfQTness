@@ -1,0 +1,258 @@
+@startuml CLC2Classes
+
+hide circle
+skinparam linetype ortho
+left to right direction
+
+package CLCEngine {
+    class DynamicSequence {
+        - T* data
+        - int length
+        - int capacity
+
+        - void makeDeepCopy(const DynamicSequence<T> &source)
+        + DynamicSequence()
+        + DynamicSequence(const DynamicSequence<T>& source)
+        + DynamicSequence(const DynamicSequence<T>&& moved)
+        + ~DynamicSequence()
+        + void append(T element)
+        + void pop()
+        + int getLength()
+        + T getElement(int index)
+        + void copyFrom(DynamicSequence<T>* source)
+        + void clear()
+        + DynamicSequence<T>& operator=(const DynamicSequence<T>& source)
+    }
+
+    struct Coordinates {
+        + int x
+        + int y
+        + bool operator=(Coordinates const& other)
+    }
+
+    enum CheckerColor {
+        White
+        Black
+        NoColor
+    }
+
+    enum CheckerType {
+        Common
+        King
+        NoType
+    }
+
+    enum Direction {
+        Up = 1
+        Right = 1
+        Down = -1
+        Left = -1
+    }
+
+    struct CheckerMetaInfo {
+        + Coordinates coordinates
+        + CheckerColor color
+        + CheckerType type
+        + bool markedForDeath
+        + bool operator==(CheckerMetaInfo const& other)
+    }
+
+    class Checker {
+
+        # CheckerMetaInfo metaInfo
+        # AbstractMoveFinder* moveFinder
+        # void findAllCommonSequences(MoveSequencesList* destination, MetaArray metaArray)
+        # void findAllCapturingSequences(MoveSequencesList* destination, MetaArray metaArray, MoveList* currentPath, bool afterMove = false)
+        # void applyMoveMeta(MetaArray metaArray, Move move)
+        # void unapplyMoveMeta(MetaArray metaArray, Move move)
+
+        + Checker(CheckerMetaInfo checkerMetaInfo)
+        + CheckerMetaInfo getMetaInfo()
+        + MoveSequencesList getAllSequences(MetaArray metaArray)
+        + MoveList getNearestMoves(MetaArray metaArray)
+        + void applyMove(Move move)
+        + void unapplyMove(Move move)
+        + void markForDeath()
+        + void unmarkForDeath()
+        + void ascend()
+        + void descend()
+
+    }
+
+
+    class Move {
+        - Coordinates source{}
+        - Coordinates destination{}
+        - CheckerMetaInfo victimMetaInfo{}
+        - bool isMoveSpecial
+
+        + Move()
+        + Move(Coordinates source, Coordinates destination, bool isMoveSpecial)
+
+        + void setVictim(CheckerMetaInfo victimMeta)
+
+        + Coordinates getSource()
+        + Coordinates getDestination()
+        + CheckerMetaInfo getVictimMetaInfo()
+
+        + bool isSpecial()
+    }
+
+    abstract class AbstractMoveFinder {
+
+        + {abstract} ~AbstractMoveFinder()
+
+        + {abstract} MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat)
+        + {abstract} MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat)
+
+        + bool isAVictim(MetaArray metaArray, Coordinates forWhat, Coordinates where)
+        + bool isAFriend(MetaArray metaArray, Coordinates forWhat, Coordinates where)
+        + bool isNothingHere(MetaArray metaArray, Coordinates where)
+
+        + bool isMarkedForDeathMeta(MetaArray metaArray, Coordinates where)
+    }
+
+    class CommonMoveFinder extends AbstractMoveFinder {
+        + MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat) override
+        + MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat) override
+    }
+
+    class KingMoveFinder extends AbstractMoveFinder {
+        # int findDistanceToVictim(MetaArray metaArray, Coordinates source, int dirH, int dirV)
+        # bool longMoveLookingFlag(Coordinates place, int dirH, int dirV)
+
+        + MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat) override
+        + MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat) override
+    }
+
+
+    class BoardCell {
+        # Checker* checker;
+
+        + BoardCell()
+        + bool empty() const
+        + MoveSequencesList getSequencesOfVillager(MetaArray metaArray)
+        + Checker* extractChecker() const
+        + void assignChecker(Checker* what)
+        + void destroyVillager(bool forced)
+        + CheckerColor getInternalCheckerColor() const
+    }
+
+    class Board {
+        # BoardCell gameBoard[8][8]
+        # MoveSequencesList availableSequences
+        # MoveList nearestAvailableMoves
+        # int checkersCount[2]
+        # CheckerColor currentMover,
+        # CheckerColor playerSide
+
+
+        # void makeDeepCopy(const Board &source)
+
+        + explicit Board(CheckerColor playerSide)
+        + Board(CheckerColor playerSide, CheckerColor curruentMover, int* checkersCountArray)
+
+        + Board(const Board &source)
+        + Board(Board&& moved)
+
+        + ~Board()
+        + MetaArray makeMetaArray()
+
+        + MoveSequencesList getAvailableSequences()
+        + MoveList getNearestAvailableMoves()
+
+        + void makeAMove(Move move)
+        + void unmakeAMove(Move move)
+
+        + void makeASequence(MoveList& sequence)
+        + void unmakeASequence(MoveList& sequence)
+
+        + void flushLists()
+
+        + void findAvailableMoves()
+
+        + bool noMovesNow()
+        + void passTurn()
+
+        + CheckerColor whoMoves()
+        + CheckerColor whoIsPlayer()
+
+        + Coordinates getCheckersCount()
+        + void assignCheckerExternal(CheckerMetaInfo metaInfo)
+
+        + CheckerMetaInfo getMetaInfo(Coordinates onBoardPlace)
+
+        + Board& operator=(const Board& source)
+    }
+
+
+    struct AnalyzerContainer {
+        MoveList sequence
+        double eval
+    }
+
+    enum Difficulty {
+        Human = 0
+        Dumbass = 2
+        Easy
+        Normal
+        Hard
+        Insane = 7
+        Extreme = 9
+    }
+
+    abstract class AbstractComputerRival {
+        # Difficulty maxSearchDepth
+        # CheckerColor side
+
+        # {abstract} AnalyzerContainer analyze(Board* board, MetaArray boardMetaArray, int currentDepth )
+
+        # {abstract} double eval(MetaArray metaArray)
+
+        + MoveList getNextSequence(Board board)
+        + virtual ~AbstractComputerRival()
+
+        + CheckerColor getSide()
+        + Difficulty getMaxDepth()
+    }
+
+    class ComputerRivalRandom extends AbstractComputerRival {
+        # AnalyzerContainer analyze(CLCEngine::Board *board, MetaArray boardMetaArray, int currentDepth) override
+        # double eval(CLCEngine::MetaArray metaArray) override
+
+        + ComputerRivalRandom(CheckerColor side)
+    }
+
+    class ComputerRivelMinimax extends AbstractComputerRival {
+        # double evalTable[8][4]
+        # AnalyzerContainer analyze(CLCEngine::Board *board, MetaArray boardMetaArray, int currentDepth) override
+        # double eval(CLCEngine::MetaArray metaArray) override
+        # int commonCost
+        # int kingCost
+
+        + ComputerRivalMinimax(Difficulty difficulty, CheckerColor side)
+    }
+}
+
+CheckerMetaInfo *-- Coordinates
+CheckerMetaInfo *-- CheckerColor
+CheckerMetaInfo *-- CheckerType
+
+Move o-- Coordinates
+Move o-- CheckerMetaInfo
+
+AbstractMoveFinder *-- DynamicSequence
+
+BoardCell *-- Checker
+
+Board *-- BoardCell
+Board o-- DynamicSequence
+Board o-- CheckerColor
+
+AnalyzerContainer *-- DynamicSequence
+
+AbstractComputerRival *-- Difficulty
+AbstractComputerRival *-- CheckerColor
+
+
+@enduml

@@ -14,6 +14,8 @@ MakeNewGameDialog::MakeNewGameDialog(AssetLoader* assetLoader, QWidget *parent):
 
     this->currentParams = DEFAULT_PARAMS;
 
+    setWindowIcon(QIcon(":/assets/new_game.ico"));
+
     this->currentParams.playerSide = Auxiliary::generatePlayerSide();
 
     this->status = QDialog::Rejected;

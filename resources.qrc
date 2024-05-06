@@ -1,9 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>appIconBig.ico</file>
-        <file>Button.png</file>
-        <file>PressedButton.png</file>
-        <file>bg.png</file>
+        <file>assets/appIconBig.ico</file>
+        <file>assets/black.png</file>
+        <file>assets/black_king.png</file>
+        <file>assets/board.png</file>
+        <file>assets/chosen_frame.png</file>
+        <file>assets/destination_frame.png</file>
+        <file>assets/start.png</file>
+        <file>assets/victim_frame.png</file>
+        <file>assets/white.png</file>
+        <file>assets/white_king.png</file>
         <file>assets/cpu/37nqqr.jpg</file>
         <file>assets/cpu/a62b66d817d2a6c32a83c3111e541972.png</file>
         <file>assets/cpu/abugan.jpg</file>
@@ -19,14 +25,18 @@
         <file>assets/cpu/Tai_Lung_Kung_Fu_Panda_1023.jpg</file>
         <file>assets/cpu/user.jpg</file>
         <file>assets/cpu/wojak.jpg</file>
-        <file>assets/black.png</file>
-        <file>assets/black_king.png</file>
-        <file>assets/board.png</file>
-        <file>assets/chosen_frame.png</file>
-        <file>assets/destination_frame.png</file>
-        <file>assets/start.png</file>
-        <file>assets/victim_frame.png</file>
-        <file>assets/white.png</file>
-        <file>assets/white_king.png</file>
+        <file>assets/bg.png</file>
+        <file>assets/Button.png</file>
+        <file>assets/PressedButton.png</file>
+        <file>assets/new_game.ico</file>
+        <file>assets/que.ico</file>
+        <file>assets/draw.ico</file>
+        <file>assets/funny.ico</file>
+        <file>assets/info.ico</file>
+        <file>assets/load.ico</file>
+        <file>assets/man.ico</file>
+        <file>assets/save.ico</file>
+        <file>assets/surrencer.ico</file>
+        <file>assets/cpu.ico</file>
     </qresource>
 </RCC>

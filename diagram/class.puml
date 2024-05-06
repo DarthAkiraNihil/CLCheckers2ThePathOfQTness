@@ -1,0 +1,556 @@
+@startuml CLC2Classes
+
+hide circle
+skinparam linetype ortho
+left to right direction
+
+package CLCEngine {
+    class DynamicSequence {
+        - T* data
+        - int length
+        - int capacity
+
+        - void makeDeepCopy(const DynamicSequence<T> &source)
+        + DynamicSequence()
+        + DynamicSequence(const DynamicSequence<T>& source)
+        + DynamicSequence(const DynamicSequence<T>&& moved)
+        + ~DynamicSequence()
+        + void append(T element)
+        + void pop()
+        + int getLength()
+        + T getElement(int index)
+        + void copyFrom(DynamicSequence<T>* source)
+        + void clear()
+        + DynamicSequence<T>& operator=(const DynamicSequence<T>& source)
+    }
+
+    struct Coordinates {
+        + int x
+        + int y
+        + bool operator=(Coordinates const& other)
+    }
+
+    enum CheckerColor {
+        White
+        Black
+        NoColor
+    }
+
+    enum CheckerType {
+        Common
+        King
+        NoType
+    }
+
+    enum Direction {
+        Up = 1
+        Right = 1
+        Down = -1
+        Left = -1
+    }
+
+    struct CheckerMetaInfo {
+        + Coordinates coordinates
+        + CheckerColor color
+        + CheckerType type
+        + bool markedForDeath
+        + bool operator==(CheckerMetaInfo const& other)
+    }
+
+    class Checker {
+
+        # CheckerMetaInfo metaInfo
+        # AbstractMoveFinder* moveFinder
+        # void findAllCommonSequences(MoveSequencesList* destination, MetaArray metaArray)
+        # void findAllCapturingSequences(MoveSequencesList* destination, MetaArray metaArray, MoveList* currentPath, bool afterMove = false)
+        # void applyMoveMeta(MetaArray metaArray, Move move)
+        # void unapplyMoveMeta(MetaArray metaArray, Move move)
+
+        + Checker(CheckerMetaInfo checkerMetaInfo)
+        + CheckerMetaInfo getMetaInfo()
+        + MoveSequencesList getAllSequences(MetaArray metaArray)
+        + MoveList getNearestMoves(MetaArray metaArray)
+        + void applyMove(Move move)
+        + void unapplyMove(Move move)
+        + void markForDeath()
+        + void unmarkForDeath()
+        + void ascend()
+        + void descend()
+
+    }
+
+
+    class Move {
+        - Coordinates source{}
+        - Coordinates destination{}
+        - CheckerMetaInfo victimMetaInfo{}
+        - bool isMoveSpecial
+
+        + Move()
+        + Move(Coordinates source, Coordinates destination, bool isMoveSpecial)
+
+        + void setVictim(CheckerMetaInfo victimMeta)
+
+        + Coordinates getSource()
+        + Coordinates getDestination()
+        + CheckerMetaInfo getVictimMetaInfo()
+
+        + bool isSpecial()
+    }
+
+    abstract class AbstractMoveFinder {
+
+        + {abstract} ~AbstractMoveFinder()
+
+        + {abstract} MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat)
+        + {abstract} MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat)
+
+        + bool isAVictim(MetaArray metaArray, Coordinates forWhat, Coordinates where)
+        + bool isAFriend(MetaArray metaArray, Coordinates forWhat, Coordinates where)
+        + bool isNothingHere(MetaArray metaArray, Coordinates where)
+
+        + bool isMarkedForDeathMeta(MetaArray metaArray, Coordinates where)
+    }
+
+    class CommonMoveFinder extends AbstractMoveFinder {
+        + MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat) override
+        + MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat) override
+    }
+
+    class KingMoveFinder extends AbstractMoveFinder {
+        # int findDistanceToVictim(MetaArray metaArray, Coordinates source, int dirH, int dirV)
+        # bool longMoveLookingFlag(Coordinates place, int dirH, int dirV)
+
+        + MoveList getNearestCommonMoves(MetaArray metaArray, Coordinates forWhat) override
+        + MoveList getNearestCapturingMoves(MetaArray metaArray, Coordinates forWhat) override
+    }
+
+
+    class BoardCell {
+        # Checker* checker;
+
+        + BoardCell()
+        + bool empty() const
+        + MoveSequencesList getSequencesOfVillager(MetaArray metaArray)
+        + Checker* extractChecker() const
+        + void assignChecker(Checker* what)
+        + void destroyVillager(bool forced)
+        + CheckerColor getInternalCheckerColor() const
+    }
+
+    class Board {
+        # BoardCell gameBoard[8][8]
+        # MoveSequencesList availableSequences
+        # MoveList nearestAvailableMoves
+        # int checkersCount[2]
+        # CheckerColor currentMover,
+        # CheckerColor playerSide
+
+
+        # void makeDeepCopy(const Board &source)
+
+        + explicit Board(CheckerColor playerSide)
+        + Board(CheckerColor playerSide, CheckerColor curruentMover, int* checkersCountArray)
+
+        + Board(const Board &source)
+        + Board(Board&& moved)
+
+        + ~Board()
+        + MetaArray makeMetaArray()
+
+        + MoveSequencesList getAvailableSequences()
+        + MoveList getNearestAvailableMoves()
+
+        + void makeAMove(Move move)
+        + void unmakeAMove(Move move)
+
+        + void makeASequence(MoveList& sequence)
+        + void unmakeASequence(MoveList& sequence)
+
+        + void flushLists()
+
+        + void findAvailableMoves()
+
+        + bool noMovesNow()
+        + void passTurn()
+
+        + CheckerColor whoMoves()
+        + CheckerColor whoIsPlayer()
+
+        + Coordinates getCheckersCount()
+        + void assignCheckerExternal(CheckerMetaInfo metaInfo)
+
+        + CheckerMetaInfo getMetaInfo(Coordinates onBoardPlace)
+
+        + Board& operator=(const Board& source)
+    }
+
+
+    struct AnalyzerContainer {
+        MoveList sequence
+        double eval
+    }
+
+    enum Difficulty {
+        Human = 0
+        Dumbass = 2
+        Easy
+        Normal
+        Hard
+        Insane = 7
+        Extreme = 9
+    }
+
+    abstract class AbstractComputerRival {
+        # Difficulty maxSearchDepth
+        # CheckerColor side
+
+        # {abstract} AnalyzerContainer analyze(Board* board, MetaArray boardMetaArray, int currentDepth )
+
+        # {abstract} double eval(MetaArray metaArray)
+
+        + MoveList getNextSequence(Board board)
+        + virtual ~AbstractComputerRival()
+
+        + CheckerColor getSide()
+        + Difficulty getMaxDepth()
+    }
+
+    class ComputerRivalRandom extends AbstractComputerRival {
+        # AnalyzerContainer analyze(CLCEngine::Board *board, MetaArray boardMetaArray, int currentDepth) override
+        # double eval(CLCEngine::MetaArray metaArray) override
+
+        + ComputerRivalRandom(CheckerColor side)
+    }
+
+    class ComputerRivelMinimax extends AbstractComputerRival {
+        # double evalTable[8][4]
+        # AnalyzerContainer analyze(CLCEngine::Board *board, MetaArray boardMetaArray, int currentDepth) override
+        # double eval(CLCEngine::MetaArray metaArray) override
+        # int commonCost
+        # int kingCost
+
+        + ComputerRivalMinimax(Difficulty difficulty, CheckerColor side)
+    }
+}
+
+
+package CLCheckers2 {
+    enum PathMapMarker {
+        Nothing
+        Destination
+        Victim
+    }
+
+    enum GameType {
+        RivalIsAHuman
+        RivalIsACPU
+    }
+
+    struct GameParameters {
+        + GameType gameType
+        + CLCEngine::Difficulty difficulty
+        + CLCEngine::CheckerColor playerSide
+    }
+
+    struct GameSaveData {
+        + CLCEngine::CheckerMetaInfo boardData[8][8]
+        + CLCEngine::CheckerColor playerSide
+        + CLCEngine::CheckerColor currentMover
+        + int checkersCount[2]
+        + GameType gameType
+        + CLCEngine::CheckerColor side
+        + CLCEngine::Difficulty maxDepth
+    }
+
+
+    class AssetLoader {
+        + AssetLoader(QString assetsPath)
+        + QPixmap getChecker(CLCEngine::CheckerMetaInfo metaInfo)
+        + QPixmap getLogo()
+        + QPixmap getBoard()
+        + QPixmap getCursor()
+        + QPixmap getPathmapMarker(PathMapMarker marker)
+        + QPixmap getAvatar(int index)
+
+        - int getAssetIndex(CLCEngine::CheckerMetaInfo metaInfo)
+        - QPixmap assets[9]
+        - QPixmap avatars[9]
+    }
+
+    class Auxiliary {
+        + {static} CLCEngine::Coordinates convertSceneToBoard(QPointF clickedPlace, CLCEngine::Coordinates borderConstraintBottom, CLCEngine::Coordinates borderConstraintTop, CLCEngine::CheckerColor playerSide)
+        + {static} CLCEngine::CheckerColor invertColor(CLCEngine::CheckerColor color)
+        + {static} CLCEngine::Coordinates convertBoardToCursor(CLCEngine::Coordinates place, CLCEngine::CheckerColor playerSide)
+        + {static} CLCEngine::Coordinates convertCursorToBoard(CLCEngine::Coordinates cursor, CLCEngine::CheckerColor playerSide)
+        + {static} int convertDifficultyToIndex(CLCEngine::Difficulty difficulty)
+        + {static} CLCEngine::Difficulty getDifficultyByIndex(int index)
+        + {static} CLCEngine::CheckerColor generatePlayerSide()
+        + {static} CLCEngine::Coordinates getInsertingPlace(CLCEngine::CheckerColor color, CLCEngine::Coordinates forPlace, int offset)
+    }
+
+    class PatryLogger {
+        + PartyLogger()
+
+        + void logLineCommited(QString line)
+
+        - CLCEngine::DynamicSequence<std::string> gameLog{}
+        - std::string currentLogLine{}
+
+        - CLCEngine::Coordinates getNotationSquareCoordinates(CLCEngine::Coordinates place)
+
+        + void registerMove(CLCEngine::Move move)
+        + void registerSequence(CLCEngine::MoveList sequence)
+        + void commitLogLine()
+        + void writeLog(std::string filename)
+        + void importLog(CLCEngine::DynamicSequence<std::string> imported)
+    }
+
+    class GameState {
+        + GameState()
+        + ~GameState()
+
+        + void resetPathmap()
+        + void makeGame(GameParameters parameters)
+        + void makeFirstCPUMove()
+
+        + bool hasMoveBeenMade()
+        + bool hasMoves()
+        + bool isDrawAvailable()
+        + bool isThereACPURival()
+        + bool noNearestMoves()
+        + bool hasActiveGame()
+
+        + CLCEngine::CheckerMetaInfo getMetaInfo(CLCEngine::Coordinates at)
+        + PathMapMarker getPathMapMarker(CLCEngine::Coordinates at)
+        + CLCEngine::Move getMove(CLCEngine::Coordinates source, CLCEngine::Coordinates destination)
+        + CLCEngine::CheckerColor getPlayerSide()
+
+        + CLCEngine::CheckerColor whoIsPlayer()
+        + CLCEngine::CheckerColor currentMover()
+
+        + int getRivalIndex()
+
+        + void findMovesIfRequired()
+        + void fillPathMap(CLCEngine::Coordinates source)
+        + void filterNearestMovesWith(CLCEngine::Move move)
+
+        + void appendMove(CLCEngine::Move move)
+        + void applyMoveOnMetaArray(CLCEngine::Move move)
+
+        + void commitMove()
+
+        + CLCEngine::MoveList makeRegularCPUMove()
+        + void commitCPUMove(CLCEngine::MoveList sequence)
+        + void flushMetaArray()
+
+        + void setDrawOfferingState(bool state)
+        + bool requestCPURivalDrawAgreement()
+
+        + GameSaveData exportGameData()
+        + void importGameData(GameSaveData save)
+
+        - void setAsNull()
+        - CLCEngine::MoveList filter(CLCEngine::Move move)
+
+        - CLCEngine::Board* makeBoard(CLCEngine::CheckerColor playerSide)
+        - CLCEngine::AbstractComputerRival* makeRival(CLCEngine::Difficulty difficulty, CLCEngine::CheckerColor side)
+
+        - int rivalIndex
+        - int step
+        - CLCEngine::CheckerColor playerSide
+        - CLCEngine::Board* gameBoard
+        - CLCEngine::AbstractComputerRival* rival
+        - CLCEngine::MetaArray activeMetaArray
+        - PathMapMarker pathMap[8][8]
+        - bool movesHaveBeenFound
+        - bool moveHasBeenMade
+        - bool isGameBegun
+        - bool drawHasBeenOffered
+        - CLCEngine::MoveList currentSequence{}
+        - CLCEngine::MoveList nearestMoves{}
+        - CLCEngine::MoveSequencesList nearestSequences{}
+
+        + void endGame()
+    }
+
+    class AvatarScene {
+        + explicit AvatarScene(AssetLoader* assetLoader, QObject *parent = nullptr)
+        + void drawAvatar(int index)
+        + void setScaling(CLCEngine::Coordinates scaling)
+
+        - AssetLoader* assetLoader
+        - CLCEngine::Coordinates scaling
+    }
+
+    class BoardScene {
+        + BoardScene(AssetLoader* assetLoader, GameState* state, QObject *parent = nullptr)
+        + ~BoardScene()
+
+        + void renderContent()
+        + void constructAGame(GameParameters gameParameters)
+        + void moveCursor(CLCEngine::Coordinates direction)
+
+        + void handleClick()
+        + void doTheFirstCPUMoveIfRequired()
+
+        + bool isDrawAvailable()
+        + void setDrawAsOffered()
+        + bool requestCPURivalDrawAgreement()
+        + QString getSurrenderMessage()
+
+        - void renderBoard()
+        - void renderPathmap()
+        - void renderCursor()
+
+        - void mousePressEvent(QGraphicsSceneMouseEvent * event)
+
+        - void handleClickNotDestinationSelected()
+        - void handleClickDestinationSelected()
+        - void passTurn()
+
+        - void makeASequenceWithDelayOnMeta(CLCEngine::MoveList sequence, int mSecDelay)
+
+        - AssetLoader* assetLoader
+        - GameState* state
+        - CLCEngine::Coordinates cursor
+        - CLCEngine::Coordinates source
+        - CLCEngine::Coordinates destination
+        - std::vector<QGraphicsPixmapItem*> activePixmaps{}
+        - QTimer* forcedRenderTimeout
+
+        + void clickHasBeenSomewhere(CLCEngine::Coordinates where)
+        + void playerWon()
+        + void cpuRivalWon(QString message)
+        + void humanRivalWon()
+        + void transferStatusBarText(QString text)
+        + void transferMoveLogLine(QString line)
+
+        + void registerMove(CLCEngine::Move move)
+        + void registerSequence(CLCEngine::MoveList sequence)
+        + void commitLogLine()
+
+        - void forceRendering()
+    }
+
+
+    class MakeNewGameDialog {
+        + explicit MakeNewGameDialog(AssetLoader* assetLoader, QWidget *parent = nullptr)
+        + ~MakeNewGameDialog()
+        + GameParameters makeANewGame()
+        + QDialog::DialogCode getStatus()
+
+        - Ui::MakeNewGameDialog *ui
+        - GameParameters currentParams
+        - QDialog::DialogCode status
+        - AvatarScene avatarScene
+
+        + void transferAvatarIndex(int index)
+        + void transferPlayerName(QString name)
+        + void transferRivalName(QString name)
+
+        - void on_rbVSHuman_clicked()
+        - void on_rbVSCPU_clicked()
+        - void on_buttonBox_accepted()
+        - void on_buttonBox_rejected()
+        - void on_comboBox_currentIndexChanged(int index)
+        - void on_sideButtonRandom_clicked()
+        - void on_sideButtonWhite_clicked()
+        - void on_sideButtonBlack_clicked()
+    }
+
+    class MainWindow {
+        + MainWindow(QString assetsPath, QWidget *parent = nullptr)
+        + ~MainWindow()
+        - Ui::MainWindow *ui
+        - MakeNewGameDialog* dialog
+        - BoardScene* boardScene
+        - GameState state
+        - PartyLogger logger
+        - AssetLoader loader
+
+        - void keyPressEvent(QKeyEvent *event)
+
+        - AvatarScene* avatar1
+        - AvatarScene* avatar2
+        - QString playerName
+        - QString rivalName
+
+        + void invokeEndgame()
+
+        - void on_ngButton_clicked()
+        - void on_ruleButton_clicked()
+        - void on_controlsButton_clicked()
+        - void on_loadButton_clicked()
+        - void on_saveButton_clicked()
+        - void on_offerDrawButton_clicked()
+        - void on_surrenderButton_clicked()
+
+
+        - void setRivalAvatar(int index)
+        - void setPlayerName(QString name)
+        - void setRivalName(QString name)
+
+        - void showEndgamePlayerWon()
+        - void showEndgameCPURivalWon(QString message)
+        - void showEndgameHumanRivalWon()
+
+        - void changeStatusBarText(QString text)
+        - void logMove(QString moveLine)
+        - void on_aboutButton_clicked()
+    }
+}
+
+CheckerMetaInfo *-- Coordinates
+CheckerMetaInfo *-- CheckerColor
+CheckerMetaInfo *-- CheckerType
+
+Move o-- Coordinates
+Move o-- CheckerMetaInfo
+
+AbstractMoveFinder *-- DynamicSequence
+
+BoardCell *-- Checker
+
+Board *-- BoardCell
+Board o-- DynamicSequence
+Board o-- CheckerColor
+
+AnalyzerContainer *-- DynamicSequence
+
+AbstractComputerRival *-- Difficulty
+AbstractComputerRival *-- CheckerColor
+
+GameSaveData *-- CheckerMetaInfo
+GameSaveData *-- CheckerColor
+GameSaveData *-- Difficulty
+
+PatryLogger *-- DynamicSequence
+
+GameState *-- CheckerColor
+GameState *-- Board
+GameState *-- AbstractComputerRival
+GameState *-- CheckerMetaInfo
+GameState *-- PathMapMarker
+GameState *-- DynamicSequence
+
+AvatarScene *-- AssetLoader
+AvatarScene o-- Coordinates
+
+BoardScene *-- AssetLoader
+BoardScene *-- GameState
+BoardScene *-- Coordinates
+
+MakeNewGameDialog *-- GameParameters
+MakeNewGameDialog *-- AvatarScene
+
+MainWindow *-- MakeNewGameDialog
+MainWindow *-- BoardScene
+MainWindow *-- GameState
+MainWindow *-- PatryLogger
+MainWindow *-- AssetLoader
+MainWindow *-- AvatarScene
+
+
+
+@enduml

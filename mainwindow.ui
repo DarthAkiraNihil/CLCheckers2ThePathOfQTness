@@ -6,13 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1072</width>
+    <width>1144</width>
     <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1000</width>
+    <width>1144</width>
     <height>600</height>
    </size>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QMessageBox QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -31,7 +31,7 @@
 }
 
 QMessageBox QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -49,7 +49,7 @@ QMessageBox QLabel {
 }
 
 QMainWindow {
-	border-image: url(:/bg.png) 3 10 3 10;
+	border-image: url(:/assets/bg.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -326,7 +326,7 @@ color: white;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -336,7 +336,7 @@ color: white;</string>
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -348,6 +348,10 @@ QPushButton:pressed {
               <property name="text">
                <string>Новая игра</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/new_game.ico</normaloff>:/assets/new_game.ico</iconset>
+              </property>
               <property name="checkable">
                <bool>false</bool>
               </property>
@@ -357,7 +361,7 @@ QPushButton:pressed {
              <widget class="QPushButton" name="saveButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -367,7 +371,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -379,13 +383,17 @@ QPushButton:pressed {
               <property name="text">
                <string>Сохранить</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/save.ico</normaloff>:/assets/save.ico</iconset>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="loadButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -395,7 +403,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -407,6 +415,10 @@ QPushButton:pressed {
               <property name="text">
                <string>Загрузить</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/load.ico</normaloff>:/assets/load.ico</iconset>
+              </property>
              </widget>
             </item>
            </layout>
@@ -417,7 +429,7 @@ QPushButton:pressed {
              <widget class="QPushButton" name="offerDrawButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -427,7 +439,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -439,13 +451,17 @@ QPushButton:pressed {
               <property name="text">
                <string>Предложить ничью</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/draw.ico</normaloff>:/assets/draw.ico</iconset>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="surrenderButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -455,7 +471,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -467,6 +483,10 @@ QPushButton:pressed {
               <property name="text">
                <string>Сдаться</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/surrencer.ico</normaloff>:/assets/surrencer.ico</iconset>
+              </property>
              </widget>
             </item>
            </layout>
@@ -477,7 +497,7 @@ QPushButton:pressed {
              <widget class="QPushButton" name="ruleButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -487,7 +507,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -499,13 +519,17 @@ QPushButton:pressed {
               <property name="text">
                <string>Правила</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/que.ico</normaloff>:/assets/que.ico</iconset>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="controlsButton">
               <property name="styleSheet">
                <string notr="true">QPushButton {
-	border-image: url(:/Button.png) 3 10 3 10;
+	border-image: url(:/assets/Button.png) 3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -515,7 +539,7 @@ QPushButton:pressed {
 }
 
 QPushButton:pressed {
-	border-image: url(:/PressedButton.png)  3 10 3 10;
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
 	border-top: 3px transparent;
     border-bottom: 3px transparent;
     border-right: 10px transparent;
@@ -527,11 +551,47 @@ QPushButton:pressed {
               <property name="text">
                <string>Управление</string>
               </property>
+              <property name="icon">
+               <iconset resource="resources.qrc">
+                <normaloff>:/assets/info.ico</normaloff>:/assets/info.ico</iconset>
+              </property>
              </widget>
             </item>
            </layout>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QPushButton" name="aboutButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+	border-image: url(:/assets/Button.png) 3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:pressed {
+	border-image: url(:/assets/PressedButton.png)  3 10 3 10;
+	border-top: 3px transparent;
+    border-bottom: 3px transparent;
+    border-right: 10px transparent;
+    border-left: 10px transparent;
+	padding-bottom: 2px;
+	font: 9pt &quot;Segoe UI&quot;;
+}</string>
+          </property>
+          <property name="text">
+           <string>О программе</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resources.qrc">
+            <normaloff>:/assets/funny.ico</normaloff>:/assets/funny.ico</iconset>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -544,13 +604,15 @@ QPushButton:pressed {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1072</width>
+     <width>1144</width>
      <height>21</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
