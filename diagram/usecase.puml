@@ -1,0 +1,62 @@
+@startuml CLCUsecase
+
+skinparam linetype ortho
+left to right direction
+
+actor Пользователь
+
+package CLCheckers2 {
+    usecase (Просмотр графического представления игровой ситуации) as uc1
+    usecase (Создание новой игры) as uc2
+    usecase (Ввести своё имя) as uc21
+    usecase (Играть против компьютера) as uc22
+    usecase (Выбор уровня сложности) as uc221
+    usecase (Играть против человека) as uc23
+    usecase (Ввести имя противника) as uc231
+    usecase (Сделать ход) as uc3
+    usecase (Управление мышью) as uc31
+    usecase (Управление клавиатурой) as uc32
+    usecase (Просмотр журнала игры) as uc4
+    usecase (Сохранение игры) as uc5
+    usecase (Сохранение игровой ситуации) as uc51
+    usecase (Сохранение журнала партии) as uc52
+    usecase (Загрузка игры) as uc6
+    usecase (Загрузка игровой ситуации) as uc61
+    usecase (Загрузка журнала партии) as uc62
+    usecase (Посмотреть информацию о программе) as uc7
+    usecase (Посмотреть справку по управлению) as uc8
+    usecase (Посмотреть правила игры) as uc9
+    usecase (Сдаться) as uc10
+    usecase (Предложить ничью) as uc11
+    usecase (Изменить размер окна) as uc12
+}
+
+Пользователь --> uc1
+Пользователь --> uc2
+Пользователь --> uc3
+Пользователь --> uc4
+Пользователь --> uc5
+Пользователь --> uc6
+Пользователь --> uc7
+Пользователь --> uc8
+Пользователь --> uc9
+Пользователь --> uc10
+Пользователь --> uc11
+Пользователь --> uc12
+
+uc21 .> uc2 : extend
+uc2 .> uc22 : include
+uc22 .> uc221 : include
+uc2 .> uc23 : include
+uc231 .> uc23 : extend
+
+uc3 .> uc31 : include
+uc3 .> uc32 : include
+
+uc5 .> uc51 : include
+uc5 .> uc52 : include
+
+uc6 .> uc61 : include
+uc62 .> uc6 : extend
+
+@enduml
