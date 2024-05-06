@@ -39,8 +39,8 @@ set(PROJECT_SOURCES
         auxTypes/gameparameters.h
         scenes/boardscene.h scenes/boardscene.cpp
         auxTypes/pathmapmarker.h
-        auxTypes/gamestate.h
-        auxTypes/gameflags.h
+
+
         auxTypes/cursormovedirections.h
         scenes/avatarscene.h scenes/avatarscene.cpp
         auxTypes/gamesavedata.h
@@ -49,10 +49,10 @@ set(PROJECT_SOURCES
         clcengine2/analyzer/EvalTables.h
         clcengine2/analyzer/EvalTable.h clcengine2/analyzer/EvalTable.cpp
         constants.h
-        mainwindow_cv.ui
+
         additional/Auxiliary.h additional/Auxiliary.cpp
         additional/GameState.h additional/GameState.cpp
-        additional/BoardRenderer.h additional/BoardRenderer.cpp
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
