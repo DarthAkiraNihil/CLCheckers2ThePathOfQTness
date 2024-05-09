@@ -136,6 +136,7 @@ void MainWindow::on_ngButton_clicked() {
             }
             this->boardScene->renderContent();
             this->boardScene->doTheFirstCPUMoveIfRequired();
+            this->ui->gameLog->clear();
         } else {
             qDebug() << "JEB: Canceled construction";
         }
@@ -345,9 +346,6 @@ void MainWindow::on_saveButton_clicked()
             this->logger.writeLog(logSaveFile.toStdString());
         }
     }
-
-
-
 
 }
 
