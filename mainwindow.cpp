@@ -190,7 +190,7 @@ void MainWindow::showEndgamePlayerWon() {
     QMessageBox(
         QMessageBox::Icon::Information,
         "Flawless victory!",
-        "Вы победили!"
+        AppConst::rivalLoseMessages[this->state.getRivalIndex()]
     ).exec();
     emit this->invokeEndgame();
 }
@@ -207,8 +207,8 @@ void MainWindow::showEndgameCPURivalWon(QString message) {
 void MainWindow::showEndgameHumanRivalWon() {
     QMessageBox(
         QMessageBox::Icon::Information,
-        "Flawless victory!",
-        "Oh no"
+        "You lose!",
+        "Похоже, вы проиграли вашему противнику. Очень жаль, но уверен, в следущющий раз вы обязательно победите."
     ).exec();
     emit this->invokeEndgame();
 }
@@ -372,10 +372,10 @@ void MainWindow::on_offerDrawButton_clicked()
                         QMessageBox::Yes | QMessageBox::No
                     ) == QMessageBox::Yes
                 ) {
-                    QMessageBox::information(this, "Friendship", "Friendship, friendship, again!");
+                    QMessageBox::information(this, "Friendship", "Friendship, friendship, again!\n\nПобедила дружба!");
                     emit this->invokeEndgame();
                 } else {
-                    QMessageBox::warning(this, "Concurrency", "Concurrency, concurrency, again!");
+                    QMessageBox::warning(this, "Concurrency", "Concurrency, concurrency, again!\n\nПобедила конкуренция...");
                 }
             }
             this->state.setDrawOfferingState(true);
@@ -400,7 +400,7 @@ void MainWindow::on_surrenderButton_clicked()
                 QMessageBox::Yes | QMessageBox::No
             ) == QMessageBox::Yes
         ) {
-            QMessageBox::critical(this, "Saatana vittu perkele", "what a dumbass");
+            QMessageBox::critical(this, "Saatana vittu perkele", AppConst::surrenderMessages[this->state.getRivalIndex()]);
             emit this->invokeEndgame();
         }
     } else {
