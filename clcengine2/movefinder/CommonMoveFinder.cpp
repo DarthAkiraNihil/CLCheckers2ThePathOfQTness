@@ -32,7 +32,7 @@ namespace CLCEngine {
             }
         } else if (
             (metaArray[forWhat.y][forWhat.x].color == CheckerColor::Black) &&
-            (forWhat.y > 1)
+            (forWhat.y > 0)
             ) {
             //DOWN
             for (int dirH = -1; dirH < 2; dirH += 2) {
