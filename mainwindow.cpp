@@ -418,10 +418,13 @@ void MainWindow::on_aboutButton_clicked()
     QMessageBox(
         QMessageBox::Icon::Information,
         "О программе",
-        "I've come to make an announcement\n\n"
-        "Shadow the Hedgehog's a bitch-ass motherfucker. He pissed on my fucking wife.\n\n"
-        "That's right. He pulled his fucking quillin' dick out and pissed on my fucking wife and then said that this was THIS BIG.\n\n"
-        "So I made a callout post on my Twitter.com. Shadow the hedgehog, you got a small dick. Its size is like this wallnut except WAY smaller. And guess what, this is how my dong looks like. BOOOOOMHHHH!"
+        "CLCheckers 2 - The Path of QTness. ver. 1.0\n\n"
+        "CLCheckers - Where CLion and Qt unite!\n\n"
+        "Автор: Зверев Егор Игоревич (aka Darth Akira Nihil) (github.com/DarthAkiraNihil), студент группы 2-41 ИВТФ ИГЭУ им. В.И.Ленина\n"
+        "Репозиторий проекта: github.com/DarthAkiraNihil/CLCheckers2ThePathOfQTness\n\n"
+        "Сиквел легендарной в узких кругах программы в русские шашки. Теперь с более человеческим интерфейсом. "
+        "Является курсовым проектом для ИГЭУ по дисциплине ООП. Руководитель: доцент каф. ПОКС Алыкова А.Л.\n\n"
+        "Проект лицензирован на основе лицензии Apache 2.0 License"
     ).exec();
 }
 
