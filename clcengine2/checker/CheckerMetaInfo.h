@@ -2,8 +2,8 @@
 // Created by EgrZver on 03.10.2023.
 //
 
-#ifndef FUCKSFML_CHECKERMETAINFO_H
-#define FUCKSFML_CHECKERMETAINFO_H
+#ifndef CLCENGINE2_CHECKERMETAINFO_H
+#define CLCENGINE2_CHECKERMETAINFO_H
 
 namespace CLCEngine {
     struct Coordinates {
@@ -58,4 +58,4 @@ namespace CLCEngine {
     };
 }
 
-#endif //FUCKSFML_CHECKERMETAINFO_H
+#endif //CLCENGINE2_CHECKERMETAINFO_H

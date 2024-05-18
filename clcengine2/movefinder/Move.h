@@ -3,8 +3,8 @@
 //
 #include <clcengine2/checker/CheckerMetaInfo.h>
 
-#ifndef FUCKSFML_MOVE_H
-#define FUCKSFML_MOVE_H
+#ifndef CLCENGINE2_MOVE_H
+#define CLCENGINE2_MOVE_H
 
 namespace CLCEngine {
 
@@ -30,4 +30,4 @@ namespace CLCEngine {
 
 } // CLCEngine
 
-#endif //FUCKSFML_MOVE_H
+#endif //CLCENGINE2_MOVE_H

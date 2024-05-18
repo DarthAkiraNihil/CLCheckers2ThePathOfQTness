@@ -4,8 +4,8 @@
 #include <iostream>
 #include <clcengine2/movefinder/Move.h>
 
-#ifndef FUCKSFML_DYNAMICSEQUENCE_H
-#define FUCKSFML_DYNAMICSEQUENCE_H
+#ifndef CLCENGINE2_DYNAMICSEQUENCE_H
+#define CLCENGINE2_DYNAMICSEQUENCE_H
 
 namespace CLCEngine {
 
@@ -43,4 +43,4 @@ namespace CLCEngine {
 
 } // CLCEngine
 
-#endif //FUCKSFML_DYNAMICSEQUENCE_H
+#endif //CLCENGINE2_DYNAMICSEQUENCE_H
